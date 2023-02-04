@@ -1,0 +1,109 @@
+# Coverage.py
+htmlcov/
+reports/
+
+# cruft
+*.rej
+
+# Data
+*.dat*
+*.pickle*
+*.pkl*
+*.xls*
+*.xlsxZ*
+*.zip*
+
+# direnv
+.envrc
+
+
+# Distribution / packaging
+*.egg-info/
+
+
+# dotenv
+.env
+
+# Hypothesis
+.hypothesis/
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+notebooks/
+
+# macOS
+.DS_Store
+
+# mypy
+.dmypy.json
+.mypy_cache/
+
+# Node.js
+node_modules/
+
+# Poetry
+.venv/
+dist/
+
+# PyCharm
+.idea/
+
+# pyenv
+.python-version
+
+# pytest
+.pytest_cache/
+*reports/pytest.xml
+
+# Python
+__pycache__/
+*.py[cdo]
+
+# Terraform
+.terraform/
+
+# CMake
+cmake-build-*/
+
+# Mongo Explorer plugin
+.idea/**/mongoSettings.xml
+
+# File-based project format
+*.iws
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+.idea/replstate.xml
+
+# SonarLint plugin
+.idea/sonarlint/
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# Editor-based Rest Client
+.idea/httpRequests
+
+# Android studio 3.1+ serialized cache file
+.idea/caches/build_file_checksums.ser
+
+# VS Code
+.vscode/
+
+# Tox
+.tox/
+
+# Coverage
+.coverage/
+
+# Generated website
+docs/_build
