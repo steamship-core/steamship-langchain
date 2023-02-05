@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 
 from langchain.chains.conversation.base import Memory
 from steamship import Block, File, Steamship, SteamshipError, Tag
-from steamship.data import TagKind, TagValueKey
+from steamship.data import TagKind
 
 
 # copied directly from langchain/langchain/chains/conversation/memory.py
@@ -20,14 +20,17 @@ def _get_prompt_input_key(inputs: Dict[str, Any], memory_variables: List[str]) -
 def _timestamp_tag() -> Tag:
     """Return a Tag with the current datetime as the value"""
     return Tag(
-        kind=TagKind.TIMESTAMP, value={TagValueKey.TIMESTAMP_VALUE: datetime.now().isoformat()}
+        # TODO: TagKind.TIMESTAMP_VALUE
+        kind=TagKind.TIMESTAMP,
+        value={"timestamp": datetime.now().isoformat()},
     )
 
 
 def _block_sort_key(block: Block) -> str:
     """Return a sort key for Blocks based on associated timestamp tags."""
     return [
-        tag.value.get(TagValueKey.TIMESTAMP_VALUE)
+        # TODO: TagKind.TIMESTAMP_VALUE
+        tag.value.get("timestamp")
         for tag in block.tags
         if tag.kind == TagKind.TIMESTAMP
     ][0]

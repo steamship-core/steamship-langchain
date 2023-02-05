@@ -101,7 +101,7 @@ To use it, write your tests like this:
 
 ```python
 from steamship.client import Steamship
-from tests.utils.fixtures import client # noqa: F401
+from utils.fixtures import client # noqa: F401
 
 def test_langchain_adapter(client: Steamship):
     # You can use the provided client to create resources, and those resources

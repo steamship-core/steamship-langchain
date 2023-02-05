@@ -1,7 +1,6 @@
 import pytest
 from steamship import Steamship, Workspace
-
-from tests.utils.client import get_steamship_client
+from utils.client import get_steamship_client
 
 
 @pytest.fixture()

@@ -8,5 +8,6 @@ import sys
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.absolute()))
+sys.path.append(str(Path(__file__).parent.parent.absolute() / "src"))
 
-from tests.utils.fixtures import client  # noqa: F401, E402
+from utils.fixtures import client  # noqa: F401, E402

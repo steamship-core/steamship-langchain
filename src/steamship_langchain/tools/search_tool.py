@@ -1,7 +1,7 @@
 from typing import Any, Optional
 
 from steamship import File, Steamship, SteamshipError
-from steamship.data import TagKind, TagValueKey
+from steamship.data import TagValueKey
 from steamship.utils.kv_store import KeyValueStore
 
 
@@ -44,7 +44,10 @@ class SteamshipSERP:
             task = self.search_tool.tag(doc=query)
             task.wait()
             answer = self._first_tag_value(
-                task.output.file, TagKind.SEARCH_RESULT, TagValueKey.STRING_VALUE
+                # TODO: TagKind.SEARCH_RESULT
+                task.output.file,
+                "search-result",
+                TagValueKey.STRING_VALUE,
             )
 
             if self.cache_store is not None:
