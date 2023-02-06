@@ -12,11 +12,12 @@ pip install termcolor
 
 Run the client:
 ```commandline
-python3.8 client/client.py
+python client/client.py
 ```
 
 ## Deploy your own
 
+Switch to the `server/` directory and run deploy.
 ```commandline
 cd server
 ship deploy
@@ -25,6 +26,10 @@ ship deploy
 The deployment script will walk you through setting up a package name that you 
 can use for your own instance, if desired. This will enable you to modify the example
 to meet your needs (or just to have fun experimenting with).
+
+
+After deployment, switch back to the parent directory (`$ cd ..`) to run the client, etc.
+You'll need to update the `package_handle` in the client to match your new deployment.
 
 ### api.py
 

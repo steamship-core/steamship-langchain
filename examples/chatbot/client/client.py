@@ -21,22 +21,19 @@ def main():
             colored(
                 "Beginning chat session (type 'history' at any time to see a dump of the full conversation "
                 "history)...",
-                "grey",
+                "blue",
             )
         )
         while True:
-            msg = input(colored("You: ", "grey"))
-            if msg.lower() == "history":
+            msg = input(colored("You: ", "blue"))
+            if msg.lower() == "history" or msg.lower() == "transcript":
                 print(
-                    colored("Transcript:\n", "grey"),
-                    colored(
-                        f'{api.invoke("/transcript", verb=Verb.GET, chat_history_handle=session_handle)}\n',
-                        "grey",
-                    ),
+                    colored("Transcript:\n", "blue"),
+                    f'{api.invoke("/transcript", verb=Verb.GET, chat_history_handle=session_handle)}\n',
                 )
             else:
                 print(
-                    colored("AI: ", "grey"),
+                    colored("AI: ", "blue"),
                     colored(
                         f'{api.invoke("/send_message", message=msg, chat_history_handle=session_handle).strip()}\n',
                         "green",

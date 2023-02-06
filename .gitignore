@@ -107,3 +107,6 @@ fabric.properties
 
 # Generated website
 docs/_build
+
+# Steamship packaging directories
+build/
