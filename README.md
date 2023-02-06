@@ -8,6 +8,7 @@ to rapidly deploy their apps on Steamship to automatically get:
 - Production-ready API endpoint(s)
 - Horizontal scaling across dependencies / backends
 - Persistent storage of app state (including caches)
+- Built-in support for Authn/z 
 - Multi-tenancy support
 - Seamless integration with other Steamship skills (ex: audio transcription) 
 - Usage Metrics and Logging
@@ -25,8 +26,15 @@ pip install steamship-langchain
 
 Here are a few examples of using langchain on Steamship.
 
-NOTE: Server and Client examples omit `import` blocks. Client examples assume
-that the user has a Steamship API key and exposed to the environment (see: [API Keys](#api-key))
+The examples use temporary workspaces to provide full cleanup during experimentation.
+[Workspaces](https://docs.steamship.com/workspaces/index.html) provide a unit of tenant isolation within Steamship.
+For production uses, persistent workspaces can be created and retrieved via `Steamship(workspace_handle="my_workspace")` .
+
+> **NOTE**
+> Thesee examples omit `import` blocks. Please See the `examples/` directory for complete code. 
+
+> **NOTE** 
+> Client examples assume that the user has a Steamship API key and that it is exposed to the environment (see: [API Keys](#api-keys))
 
 ### Basic Prompting
 
@@ -53,6 +61,8 @@ with Steamship.temporary_workspace() as client:
 
 ### Self Ask With Search
 
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)
+
 #### Server Snippet
 
 ```python
@@ -76,6 +86,10 @@ with Steamship.temporary_workspace() as client:
 ```
 
 ### ChatBot
+
+Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain.
+
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
 
 #### Server Snippet
 
@@ -238,3 +252,15 @@ with Steamship.temporary_workspace() as client:
             print(input_doc['page_content'])
             break
 ```
+
+## API Keys
+
+Steamship API Keys provide access to our SDK for AI models, including OpenAI, GPT, Cohere, and more.
+
+Get your free API key here: https://steamship.com/account/api.
+
+Once you have an API Key, you can :
+* Set the env var `STEAMSHIP_API_KEY` for your client
+* Pass it directly via `Steamship(api_key=)` or `Steamship.tempory_workspace(api_key=)`.
+
+Alternatively, you can run `ship login`, which will guide you through setting up your environment.
