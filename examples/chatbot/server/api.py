@@ -3,10 +3,7 @@ from prompt import CHATBOT_PROMPT
 from steamship.invocable import PackageService, get, post
 
 from steamship_langchain.llms import SteamshipGPT
-from steamship_langchain.memory import (
-    SteamshipPersistentConversationMemory,
-    SteamshipPersistentConversationWindowMemory,
-)
+from steamship_langchain.memory import ConversationalBufferWindowMemory, ConversationBufferMemory
 
 
 class ChatbotPackage(PackageService):
@@ -15,7 +12,7 @@ class ChatbotPackage(PackageService):
         """Returns an AI-generated response to a user conversation, based on limited prior context."""
 
         # steamship_memory will persist/retrieve conversation across API calls
-        steamship_memory = SteamshipPersistentConversationWindowMemory(
+        steamship_memory = ConversationalBufferWindowMemory(
             client=self.client, file_handle=chat_history_handle, k=2
         )
         chatgpt = LLMChain(
@@ -30,7 +27,7 @@ class ChatbotPackage(PackageService):
         """Return the full transcript for a chat session."""
 
         # we can use the non-windowed memory to retrieve the full history.
-        steamship_memory = SteamshipPersistentConversationMemory(
+        steamship_memory = ConversationBufferMemory(
             client=self.client, file_handle=chat_history_handle
         )
 

@@ -35,8 +35,8 @@ Initial support is offered for the following (with more to follow soon):
     - An adapter is provided for Steamship's SERPAPI integration (`SteamshipSERP`)
 - Memory
   - Two adapters that provide persistent conversation memory:
-    - Windowed Memory (`SteamshipPersistentConversationMemory`)
-    - Complete Memory (`SteamshipPersistentConversationWindowMemory`)
+    - Complete Memory (`steamship_langchain.memory.ConversationalBufferMemory`)
+    - Windowed Memory (`steamship_langchain.memory.ConversationalBufferWindowMemory`)
 
 ## Example Use Cases
 
@@ -128,11 +128,13 @@ Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (ful
 #### Server Snippet
 
 ```python
+from steamship_langchain.memory import ConversationalBufferWindowMemory
+
 @post("/send_message")
 def send_message(self, message: str, chat_history_handle: str) -> str:
-    mem = SteamshipPersistentConversationWindowMemory(client=self.client,
-                                                      file_handle=chat_history_handle,
-                                                      k=2)
+    mem = ConversationalBufferWindowMemory(client=self.client,
+                                           key=chat_history_handle,
+                                           k=2)
     chatgpt = LLMChain(
         llm=SteamshipGPT(client=self.client, temperature=0), 
         prompt=CHATBOT_PROMPT, 
