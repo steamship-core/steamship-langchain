@@ -24,21 +24,26 @@ pip install steamship-langchain
 
 ## Example Use Cases
 
-Here are a few examples of using LangChain on Steamship.
+Here are a few examples of using LangChain on Steamship:
+- [Basic Prompting](#basic-prompting)
+- [Self Ask With Search](#self-ask-with-search)
+- [ChatBot](#chatbot)
+- [Summarize Audio](#summarize-audio--async-chaining-)
+- [Question Answering With Sources](#question-answering-with-sources--embeddings-)
 
 The examples use temporary workspaces to provide full cleanup during experimentation.
 [Workspaces](https://docs.steamship.com/workspaces/index.html) provide a unit of tenant isolation within Steamship.
 For production uses, persistent workspaces can be created and retrieved via `Steamship(workspace_handle="my_workspace")` .
 
 > **NOTE**
-> Thesee examples omit `import` blocks. Please See the `examples/` directory for complete code. 
+> Thesee examples omit `import` blocks. Please consult the `examples/` directory for complete source code. 
 
 > **NOTE** 
 > Client examples assume that the user has a Steamship API key and that it is exposed to the environment (see: [API Keys](#api-keys))
 
 ### Basic Prompting
 
-Example of a basic prompt using a Steamship LLM integration.
+Example of a basic prompt using a Steamship LLM integration (full source: [examples/greeting](./examples/greeting))
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Simple-LangChain-Prompting-on-Steamship)](https://replit.com/@SteamshipDoug/Simple-LangChain-Prompting-on-Steamship)
 
@@ -69,7 +74,7 @@ with Steamship.temporary_workspace() as client:
 
 ### Self Ask With Search
 
-Executes the LangChain `self-ask-with-search` agent using the Steamship GPT and SERP Tool plugins.
+Executes the LangChain `self-ask-with-search` agent using the Steamship GPT and SERP Tool plugins (full source: [examples/self-ask-with-search](./examples/self-ask-with-search))
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)
 
@@ -97,7 +102,7 @@ with Steamship.temporary_workspace() as client:
 
 ### ChatBot
 
-Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain.
+Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (full source: [examples/chatbot](./examples/chatbot)).
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
 
@@ -132,7 +137,7 @@ with Steamship.temporary_workspace() as client:
 ### Summarize Audio (Async Chaining)
 
 This provides an example of using LangChain to process audio transcriptions
-obtained via Steamship's speech-to-text plugins (here, we use Whisper).
+obtained via Steamship's speech-to-text plugins (full source: [examples/summarize-audio](./examples/summarize-audio))
 
 A brief introduction to the Task system (and Task dependencies, for chaining) is
 provided in this example. Here, we use `task.wait()` style polling, but time-based
@@ -189,7 +194,10 @@ with Steamship.temporary_workspace() as client:
 ### Question Answering with Sources (Embeddings)
 
 Provides a basic example of using Steamship to manage embeddings and power a LangChain agent
-for question answering with sources. The embeddings will persist for the lifetime of the Workspace.
+for question answering with sources (full source: [examples/qa_with_sources](./examples/qa_with_sources))
+
+> **NOTE** 
+> The embeddings will persist for the lifetime of the Workspace.
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Question-Answering-with-Sources-using-LangChain-on-Steamship)](https://replit.com/@SteamshipDoug/Question-Answering-with-Sources-using-LangChain-on-Steamship)
 
@@ -303,3 +311,8 @@ Workspaces as best fits your needs.
 
 More on deployment and Workspaces can be found in [our docs](https://docs.steamship.com/).
 
+## Feedback and Support
+
+Have any feedback on this package? Or on [Steamship](https://steamship.com) in general?
+
+We'd love to hear from you. Please reach out to: hello@steamship.com, or join us on our [Discord](https://discord.gg/5Vry5ANVwT).
