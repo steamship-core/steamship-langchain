@@ -1,5 +1,7 @@
 # Steamship Python Client Library For LangChain (🦜️🔗)
 
+[![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
+
 [Steamship](https://steamship.com/) is the fastest way to build, ship, and use full-lifecycle language AI.
 
 This repository contains [LangChain](https://langchain.readthedocs.io/en/latest/) adapters for Steamship, enabling 
@@ -152,6 +154,13 @@ with Steamship.temporary_workspace() as client:
 ```
 
 ### Summarize Audio (Async Chaining)
+
+> [![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#experimental)
+>
+> Audio transcription support not yet considered fully-production ready on Steamship. We are working hard on
+> productionizing support for audio transcription at scale, but there may be some existing issues that you encounter
+> as you try this out.
+
 
 This provides an example of using LangChain to process audio transcriptions
 obtained via Steamship's speech-to-text plugins (full source: [examples/summarize-audio](./examples/summarize-audio))
