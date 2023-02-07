@@ -1,0 +1,82 @@
+# This workflow will run Python tests against Steamship Production
+
+name: Run Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run test suite
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        environment: [Production, Staging]
+        python-version: [ "3.8" ]
+        include:
+          - environment: Production
+            api-key: STEAMSHIP_PROD_TEST_KEY
+            api-base: STEAMSHIP_PROD_TEST_API_BASE
+            app-base: STEAMSHIP_PROD_TEST_APP_BASE
+          - environment: Staging
+            api-key: STEAMSHIP_STAGING_TEST_KEY
+            api-base: STEAMSHIP_STAGING_TEST_API_BASE
+            app-base: STEAMSHIP_STAGING_TEST_APP_BASE
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install Virtualenv
+        run: python3 -m venv .venv
+
+      - name: Activate Virtualenv
+        run: source .venv/bin/activate
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: echo "::set-output name=dir::$(pip cache dir)"
+
+      - name: pip cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: ${{ runner.os }}-pip-
+
+      - name: Install Development Dependencies
+        run: python -m pip install --upgrade -r requirements.dev.txt
+
+      - name: Install Dependencies
+        run: python -m pip install --upgrade -r requirements.txt
+
+      - name: Lint
+        run: pre-commit run --all-files --color always
+
+      - name: Install Local Package
+        run: python -m pip install -e .
+
+      - name: Run Tests
+        run: pytest --junitxml=tests.xml
+        env:
+          STEAMSHIP_API_KEY: ${{ secrets[matrix.api-key] }}
+          STEAMSHIP_API_BASE: ${{ secrets[matrix.api-base] }}
+          STEAMSHIP_APP_BASE: ${{ secrets[matrix.app-base] }}
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: always() # always run even if the previous step fails
+        with:
+          check_name: ${{ matrix.environment }} Test Results
+          report_paths: '**/tests.xml'
