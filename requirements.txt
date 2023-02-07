@@ -1,3 +1,5 @@
 steamship==2.3.13
 langchain==0.0.78
-transformers==4.26.0
+tiktoken==0.2.0
+
+# transformers==4.26.0

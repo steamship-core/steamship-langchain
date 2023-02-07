@@ -1,11 +1,10 @@
 import logging
-import tempfile
 from typing import Any, List, Mapping, Optional
 
+import tiktoken
 from langchain.llms.base import LLM
 from pydantic import Field
 from steamship import Steamship
-from transformers import GPT2TokenizerFast
 
 
 class SteamshipGPT(LLM):
@@ -54,16 +53,23 @@ class SteamshipGPT(LLM):
             "cache": self.cache,
         }
 
+    # def get_num_tokens(self, text: str) -> int:
+    #     """Get the number of tokens present in the text."""
+    #
+    #     # create a GPT-3 tokenizer instance
+    #     # NB: as Steamship deploys to AWS Lambda, we must only use the R/W dir of /tmp
+    #     tmp = tempfile.gettempdir()
+    #     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2", cache_dir=f"{tmp}/tokenizer/")
+    #
+    #     # tokenize the text using the GPT-3 tokenizer
+    #     tokenized_text = tokenizer.tokenize(text)
+    #
+    #     # calculate the number of tokens in the tokenized text
+    #     return len(tokenized_text)
+
     def get_num_tokens(self, text: str) -> int:
-        """Get the number of tokens present in the text."""
-
-        # create a GPT-3 tokenizer instance
-        # NB: as Steamship deploys to AWS Lambda, we must only use the R/W dir of /tmp
-        tmp = tempfile.gettempdir()
-        tokenizer = GPT2TokenizerFast.from_pretrained("gpt2", cache_dir=f"{tmp}/tokenizer/")
-
-        # tokenize the text using the GPT-3 tokenizer
-        tokenized_text = tokenizer.tokenize(text)
-
-        # calculate the number of tokens in the tokenized text
+        """Calculate num tokens with tiktoken package."""
+        encoder = "p50k_base"
+        enc = tiktoken.get_encoding(encoder)
+        tokenized_text = enc.encode(text)
         return len(tokenized_text)
