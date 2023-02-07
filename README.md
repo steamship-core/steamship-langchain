@@ -12,7 +12,7 @@ LangChain developers to rapidly deploy their apps on Steamship to automatically 
 - Multi-tenancy support
 - Seamless integration with other Steamship skills (ex: audio transcription) 
 - Usage Metrics and Logging
-- And much more...
+- And more...
 
 ## Installing
 
@@ -22,7 +22,7 @@ Install via pip:
 pip install steamship-langchain
 ```
 
-## Examples
+## Example Use Cases
 
 Here are a few examples of using LangChain on Steamship.
 
@@ -69,7 +69,7 @@ with Steamship.temporary_workspace() as client:
 
 ### Self Ask With Search
 
-Executes the LangChain `self-ask-with-search` agent using production Steamship GPT LLM and SERP Tool.
+Executes the LangChain `self-ask-with-search` agent using the Steamship GPT and SERP Tool plugins.
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)
 
@@ -125,8 +125,8 @@ with Steamship.temporary_workspace() as client:
     api = client.use("my-langchain-app")
     session_handle = "foo-user-session-1234"
     while True:
-        msg = input("> ")
-        print(f"{api.invoke('/send_message', message=msg, chat_history_handle=session_handle)}")
+        msg = input("You: ")
+        print(f"AI: {api.invoke('/send_message', message=msg, chat_history_handle=session_handle)}")
 ```
 
 ### Summarize Audio (Async Chaining)
@@ -188,11 +188,23 @@ with Steamship.temporary_workspace() as client:
 
 ### Question Answering with Sources (Embeddings)
 
+Provides a basic example of using Steamship to manage embeddings and power a LangChain agent
+for question answering with sources. The embeddings will persist for the lifetime of the Workspace.
+
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Question-Answering-with-Sources-using-LangChain-on-Steamship)](https://replit.com/@SteamshipDoug/Question-Answering-with-Sources-using-LangChain-on-Steamship)
+
 #### Server Snippet
 
 ```python
 def __init__(self, **kwargs):
     super().__init__(**kwargs)
+    # set up LLM cache
+    langchain.llm_cache = SteamshipCache(self.client)
+    # set up LLM
+    self.llm = SteamshipGPT(client=self.client,
+                            temperature=0,
+                            cache=True,
+                            max_words=250)
     # create a persistent embedding store
     self.index = self.client.use_plugin(
         "embedding-index",
@@ -208,17 +220,22 @@ def __init__(self, **kwargs):
         },
         fetch_if_exists=True,
     )
-    
-@post("embed_file")
-def embed_file(self, file_handle: str) -> bool:
-    text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=0)
+
+@post("index_file")
+def index_file(self, file_handle: str) -> bool:
+    text_splitter = CharacterTextSplitter(chunk_size=250, chunk_overlap=0)
     texts = []
     file = File.get(self.client, handle=file_handle)
     for block in file.blocks:
         texts.extend(text_splitter.split_text(block.text))
 
-    items = [Tag(client=self.client, text=t, value={"source": f"{file.handle}-offset-{i*500}"})
-             for i, t in enumerate(texts)]
+    # give an approximate source location based on chunk size
+    items = [
+        Tag(client=self.client,
+            text=t,
+            value={"source": f"{file.handle}-offset-{i * 250}"})
+        for i, t in enumerate(texts)
+    ]
 
     self.index.insert(items)
     return True
@@ -233,46 +250,35 @@ def search_embeddings(self, query: str, k: int) -> List[SearchResult]:
 
 @post("/qa_with_sources")
 def qa_with_sources(self, query: str) -> Dict[str, Any]:
-    llm = SteamshipGPT(client=self.client, temperature=0, cache=True)
-    chain = load_qa_with_sources_chain(llm, chain_type="stuff")
+    chain = load_qa_with_sources_chain(self.llm,
+                                       chain_type="map_reduce",
+                                       verbose=False)
     search_results = self.search_embeddings(query, k=4)
-    docs = [Document(page_content=result.tag.text, metadata={"source": result.tag.value.get("source", "unknown")})
-            for result in search_results]
+    docs = [
+        Document(page_content=result.tag.text,
+                 metadata={"source": result.tag.value.get("source", "unknown")})
+        for result in search_results
+    ]
     return chain({"input_documents": docs, "question": query})
-
-
-
 ```
 
 #### Client Snippet
 
 ```python
 with Steamship.temporary_workspace() as client:
-    api = client.use("my-langchain-ap")
+    api = client.use("my-langchain-app")
     
-    # Embed the State of the Union address
-    with open("state-of-the-union.txt") as f:
-        sotu_file = File.create(self.client, blocks=[Block(text=f.readlines())])
-    
-    api.invoke("/embed_file", file_handle=sotu_file)
+    # Upload the State of the Union address
+    with open("state-of-the-union-2022.txt") as f:
+        sotu_file = File.create(client, blocks=[Block(text=f.read())])
+
+    # Embed
+    api.invoke("/index_file", file_handle=sotu_file.handle)
 
     # Issue Query
     query = "What did the president say about Justice Breyer?"
-    print(f"------\nQuery: {query}")
-    response = api.invoke('/qa_with_sources', query=query)
-    print(f"Answer: {response['output_text']}")
-
-    # Print source
-    # NB: assumes a single source is used in response
-    last_line = response['output_text'].splitlines()[-1:][0]
-    source = last_line[len("SOURCES: "):]
-    print(f"------\nSource text ({source}):")
-    for input_doc in response['input_documents']:
-        metadata = input_doc['metadata']
-        src = metadata['source']
-        if source == src:
-            print(input_doc['page_content'])
-            break
+    response = api.invoke("/qa_with_sources", query=query)
+    print(f"Answer: {response['output_text'].strip()}")
 ```
 
 ## API Keys
@@ -286,3 +292,14 @@ Once you have an API Key, you can :
 * Pass it directly via `Steamship(api_key=)` or `Steamship.tempory_workspace(api_key=)`.
 
 Alternatively, you can run `ship login`, which will guide you through setting up your environment.
+
+## Deploying on Steamship
+
+Deploying LangChain apps on Steamship is simple: `ship deploy`.
+
+From your package directory (where your `api.py` lives), you can issue the `ship deploy` command to generate a manifest 
+file and push your package to Steamship. You may then use the Steamship SDK to create instances of your package in
+Workspaces as best fits your needs.
+
+More on deployment and Workspaces can be found in [our docs](https://docs.steamship.com/).
+

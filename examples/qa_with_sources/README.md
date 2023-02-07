@@ -1,6 +1,7 @@
-# Self Ask With Search Example
+# QA With Sources Example (Embeddings)
 
-This is an example of deploying an app using a `self-ask-with-search` LangChain on Steamship.
+This is an example of deploying an app that uses a `qa_with_sources_chain` LangChain on Steamship.
+Steamship's embeddings support is used to find and provide sources for the inference.
 
 ## Try it out
 
