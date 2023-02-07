@@ -28,7 +28,7 @@ pip install steamship-langchain
 
 Initial support is offered for the following (with more to follow soon):
 - LLMS
-  - An adapter is provided for Steamship's OpenAI integration (`SteamshipGPT`)
+  - An adapter is provided for Steamship's OpenAI integration (`steamship_langchain.llms.OpenAI`)
   - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
 - Tools
   - Search:
@@ -66,6 +66,8 @@ Example of a basic prompt using a Steamship LLM integration (full source: [examp
 #### Server Snippet
 
 ```python
+from steamship_langchain.llms import OpenAI
+
 @post("greet")
 def greet(self, user: str) -> str:
     prompt = PromptTemplate(
@@ -74,7 +76,7 @@ def greet(self, user: str) -> str:
       "Create a welcome message for user {user}. Thank them for running their LangChain app on Steamship. "
       "Encourage them to deploy their app via `ship deploy` when ready.",
     )
-    llm = SteamshipGPT(client=self.client, temperature=0.8)
+    llm = OpenAI(client=self.client, temperature=0.8)
     return llm(prompt.format(user=user))
 ```
 
@@ -97,9 +99,11 @@ Executes the LangChain `self-ask-with-search` agent using the Steamship GPT and 
 #### Server Snippet
 
 ```python
+from steamship_langchain.llms import OpenAI
+
 @post("/self_ask_with_search")
 def self_ask_with_search(self, query: str) -> str:
-    llm = SteamshipGPT(client=self.client, temperature=0.0, cache=True)
+    llm = OpenAI(client=self.client, temperature=0.0, cache=True)
     serp_tool = SteamshipSERP(client=self.client, cache=True)
     tools = [Tool(name="Intermediate Answer", func=serp_tool.search)]
     self_ask_with_search = initialize_agent(tools, llm, agent="self-ask-with-search", verbose=False)
@@ -128,6 +132,7 @@ Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (ful
 #### Server Snippet
 
 ```python
+from steamship_langchain.llms import OpenAI
 from steamship_langchain.memory import ConversationalBufferWindowMemory
 
 @post("/send_message")
@@ -136,7 +141,7 @@ def send_message(self, message: str, chat_history_handle: str) -> str:
                                            key=chat_history_handle,
                                            k=2)
     chatgpt = LLMChain(
-        llm=SteamshipGPT(client=self.client, temperature=0), 
+        llm=OpenAI(client=self.client, temperature=0),
         prompt=CHATBOT_PROMPT, 
         memory=mem,
     )
@@ -175,6 +180,7 @@ provided in this example. Here, we use `task.wait()` style polling, but time-bas
 
 #### Server Snippet
 ```python
+from steamship_langchain.llms import OpenAI
 
 @post("summarize_file")
 def summarize_file(self, file_handle: str) -> str:
@@ -184,7 +190,7 @@ def summarize_file(self, file_handle: str) -> str:
     for block in file.blocks:
         texts.extend(text_splitter.split_text(block.text))
     docs = [Document(page_content=t) for t in texts]
-    llm = SteamshipGPT(client=self.client, cache=True)
+    llm = OpenAI(client=self.client, cache=True)
     chain = load_summarize_chain(llm, chain_type="map_reduce")
     return chain.run(docs)
 
@@ -232,12 +238,14 @@ for question answering with sources (full source: [examples/qa_with_sources](./e
 #### Server Snippet
 
 ```python
+from steamship_langchain.llms import OpenAI
+
 def __init__(self, **kwargs):
     super().__init__(**kwargs)
     # set up LLM cache
     langchain.llm_cache = SteamshipCache(self.client)
     # set up LLM
-    self.llm = SteamshipGPT(client=self.client,
+    self.llm = OpenAI(client=self.client,
                             temperature=0,
                             cache=True,
                             max_words=250)

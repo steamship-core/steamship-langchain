@@ -2,7 +2,7 @@ from langchain.chains import LLMChain
 from prompt import CHATBOT_PROMPT
 from steamship.invocable import PackageService, get, post
 
-from steamship_langchain.llms import SteamshipGPT
+from steamship_langchain.llms import OpenAI
 from steamship_langchain.memory import ConversationalBufferWindowMemory, ConversationBufferMemory
 
 
@@ -16,7 +16,7 @@ class ChatbotPackage(PackageService):
             client=self.client, file_handle=chat_history_handle, k=2
         )
         chatgpt = LLMChain(
-            llm=SteamshipGPT(client=self.client, temperature=0),
+            llm=OpenAI(client=self.client, temperature=0),
             prompt=CHATBOT_PROMPT,
             memory=steamship_memory,
         )
