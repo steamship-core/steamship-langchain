@@ -106,6 +106,9 @@ Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (ful
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
 
+> **NOTE**
+> The full ChatBot transcript will persist for the lifetime of the Steamship Workspace. 
+
 #### Server Snippet
 
 ```python
@@ -143,7 +146,7 @@ A brief introduction to the Task system (and Task dependencies, for chaining) is
 provided in this example. Here, we use `task.wait()` style polling, but time-based
 `task.refresh()` style polling, etc., is also available.
 
-[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Summarize-Audio-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Summarize-Audio-with-LangChain-and-Steamship)
 
 #### Server Snippet
 ```python
