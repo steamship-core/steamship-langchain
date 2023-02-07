@@ -1,0 +1,35 @@
+{
+	"type": "package",
+	"handle": "test-simple-greeting",
+	"version": "0.0.1",
+	"description": null,
+	"author": "doug",
+	"entrypoint": "Unused",
+	"public": true,
+	"build_config": {
+		"ignore": [
+			"tests",
+			"examples"
+		]
+	},
+	"configTemplate": {},
+	"steamshipRegistry": {
+		"tagline": "Example using Steamship to Deploy LangChain",
+		"tagline2": null,
+		"usefulFor": null,
+		"videoURL": null,
+		"githubURL": null,
+		"demoURL": null,
+		"jupyterURL": null,
+		"authorGithub": "",
+		"authorName": "doug",
+		"authorEmail": null,
+		"authorTwitter": null,
+		"authorURL": null,
+		"tags": [
+			"Prompt API",
+			"LangChain",
+			"Self Ask With Search"
+		]
+	}
+}

@@ -1,6 +1,8 @@
-# Chatbot Example
+# Summarize Audio (Async Chaining)
 
-This is an example of deploying an app using a LangChain-based ChatBot on Steamship.
+This is an example of deploying an app LangChain for summarization on Steamship.
+It provides an integration with one of Steamship's audio transcription plugins
+and a small introduction to the Task system.
 
 ## Try it out
 
@@ -17,7 +19,7 @@ python client/client.py
 
 ## Deploy your own
 
-Switch to the `server/` directory and run deploy. 
+Switch to the `server/` directory and run deploy.
 ```commandline
 cd server
 ship deploy

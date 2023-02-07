@@ -1,9 +1,9 @@
-# Steamship Python Client Library For Langchain (🦜️🔗)
+# Steamship Python Client Library For LangChain (🦜️🔗)
 
-Steamship is the fastest way to build, ship, and use full-lifecycle language AI.
+[Steamship](https://steamship.com/) is the fastest way to build, ship, and use full-lifecycle language AI.
 
-This repository contains langchain adapters for Steamship, enabling langchain developers
-to rapidly deploy their apps on Steamship to automatically get:
+This repository contains [LangChain](https://langchain.readthedocs.io/en/latest/) adapters for Steamship, enabling 
+LangChain developers to rapidly deploy their apps on Steamship to automatically get:
 
 - Production-ready API endpoint(s)
 - Horizontal scaling across dependencies / backends
@@ -24,7 +24,7 @@ pip install steamship-langchain
 
 ## Examples
 
-Here are a few examples of using langchain on Steamship.
+Here are a few examples of using LangChain on Steamship.
 
 The examples use temporary workspaces to provide full cleanup during experimentation.
 [Workspaces](https://docs.steamship.com/workspaces/index.html) provide a unit of tenant isolation within Steamship.
@@ -38,14 +38,20 @@ For production uses, persistent workspaces can be created and retrieved via `Ste
 
 ### Basic Prompting
 
+Example of a basic prompt using a Steamship LLM integration.
+
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Simple-LangChain-Prompting-on-Steamship)](https://replit.com/@SteamshipDoug/Simple-LangChain-Prompting-on-Steamship)
+
 #### Server Snippet
 
 ```python
-@post("basic_prompt")
-def basic_prompt(self, user: str) -> str:
+@post("greet")
+def greet(self, user: str) -> str:
     prompt = PromptTemplate(
-        input_variables=["user"],
-        template="Create a welcome message for user {user} and thank them for using langchain on Steamship.",
+      input_variables=["user"],
+      template=
+      "Create a welcome message for user {user}. Thank them for running their LangChain app on Steamship. "
+      "Encourage them to deploy their app via `ship deploy` when ready.",
     )
     llm = SteamshipGPT(client=self.client, temperature=0.8)
     return llm(prompt.format(user=user))
@@ -56,10 +62,14 @@ def basic_prompt(self, user: str) -> str:
 ```python
 with Steamship.temporary_workspace() as client:
     api = client.use("my-langchain-app")
-    print(api.invoke("/basic_prompt", user="Han Solo"))
+    while True:
+        name = input("Name: ")
+        print(f'{api.invoke("/greet", user=name).strip()}\n')
 ```
 
 ### Self Ask With Search
+
+Executes the LangChain `self-ask-with-search` agent using production Steamship GPT LLM and SERP Tool.
 
 [![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)
 
@@ -121,6 +131,15 @@ with Steamship.temporary_workspace() as client:
 
 ### Summarize Audio (Async Chaining)
 
+This provides an example of using LangChain to process audio transcriptions
+obtained via Steamship's speech-to-text plugins (here, we use Whisper).
+
+A brief introduction to the Task system (and Task dependencies, for chaining) is
+provided in this example. Here, we use `task.wait()` style polling, but time-based
+`task.refresh()` style polling, etc., is also available.
+
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
+
 #### Server Snippet
 ```python
 
@@ -152,16 +171,19 @@ churchill_yt_url = "https://www.youtube.com/watch?v=MkTw3_PmKtc"
 with Steamship.temporary_workspace() as client:
     api = client.use("my-langchain-app")
     yt_importer = client.use_plugin("youtube-file-importer")
-    audio_file = File.create_with_plugin(client=client,
+    import_task = File.create_with_plugin(client=client,
                                          plugin_instance=yt_importer.handle, 
                                          url=churchill_yt_url)
+    import_task.wait()
+    audio_file = import_task.output
     
     summarize_task_response = api.invoke("/summarize_audio_file", audio_file_handle=audio_file.handle)
     summarize_task = Task(client=client, **summarize_task_response)
     summarize_task.wait()
-
-    summary = base64.b64decode(summarize_task.output).decode("utf-8")
-    print(f"Summary: {summary}")
+    
+    if summarize_task.state == TaskState.succeeded:
+      summary = base64.b64decode(summarize_task.output).decode("utf-8")
+      print(f"Summary: {summary.strip()}")
 ```
 
 ### Question Answering with Sources (Embeddings)
@@ -255,7 +277,7 @@ with Steamship.temporary_workspace() as client:
 
 ## API Keys
 
-Steamship API Keys provide access to our SDK for AI models, including OpenAI, GPT, Cohere, and more.
+Steamship API Keys provide access to our SDK for AI models, including OpenAI, GPT, Cohere, Whisper, and more.
 
 Get your free API key here: https://steamship.com/account/api.
 

@@ -28,6 +28,8 @@ class ChatbotPackage(PackageService):
     @get("/transcript")
     def transcript(self, chat_history_handle: str) -> str:
         """Return the full transcript for a chat session."""
+
+        # we can use the non-windowed memory to retrieve the full history.
         steamship_memory = SteamshipPersistentConversationMemory(
             client=self.client, file_handle=chat_history_handle
         )

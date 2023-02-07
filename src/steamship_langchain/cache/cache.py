@@ -19,9 +19,14 @@ class SteamshipCache(BaseCache):
         self.key_store_map = {}
 
     @staticmethod
-    def _handle_for(llm_string) -> str:
+    def _handle_for(llm_string: str) -> str:
         """Generate hash-based ID for a langchain LLM."""
         return f"cache-{hashlib.sha256(llm_string.encode('utf-8')).hexdigest()}"
+
+    @staticmethod
+    def _key_for(prompt: str) -> str:
+        """Hash prompt to use as key in cache."""
+        return f"prompt-{hashlib.sha256(prompt.encode('utf-8')).hexdigest()}"
 
     def lookup(self, prompt: str, llm_string: str) -> Optional[RETURN_VAL_TYPE]:
         """Look up based on prompt and llm_string.
@@ -37,7 +42,7 @@ class SteamshipCache(BaseCache):
             store = KeyValueStore(client=self.client, store_identifier=cache_handle)
             self.key_store_map[cache_handle] = store
 
-        value_dict = store.get(key=prompt) or {}
+        value_dict = store.get(key=SteamshipCache._key_for(prompt)) or {}
         if len(value_dict) > 0:
             logging.debug(f"cache hit for {prompt}")
             generations = []
@@ -68,5 +73,5 @@ class SteamshipCache(BaseCache):
             value[f"generation-{i}"] = generation.text
 
         # TODO: should this be synchronous and wait?
-        store.set(key=prompt, value=value)
+        store.set(key=SteamshipCache._key_for(prompt), value=value)
         return None
