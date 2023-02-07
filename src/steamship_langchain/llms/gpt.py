@@ -32,7 +32,7 @@ class SteamshipGPT(LLM):
         instance_handle = f"gpt-3-{''.join(filter(str.isalnum, stop_str)).lower()}"
 
         # we create a plugin instance in `_call` because currently `stop` params are passed at configuration-time,
-        # not run-time
+        # not run-time. this will be addressed in planned subsequent versions.
         llm_plugin = self.client.use_plugin(
             plugin_handle=self.plugin_handle,
             instance_handle=instance_handle,
@@ -53,22 +53,10 @@ class SteamshipGPT(LLM):
             "cache": self.cache,
         }
 
-    # def get_num_tokens(self, text: str) -> int:
-    #     """Get the number of tokens present in the text."""
-    #
-    #     # create a GPT-3 tokenizer instance
-    #     # NB: as Steamship deploys to AWS Lambda, we must only use the R/W dir of /tmp
-    #     tmp = tempfile.gettempdir()
-    #     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2", cache_dir=f"{tmp}/tokenizer/")
-    #
-    #     # tokenize the text using the GPT-3 tokenizer
-    #     tokenized_text = tokenizer.tokenize(text)
-    #
-    #     # calculate the number of tokens in the tokenized text
-    #     return len(tokenized_text)
-
     def get_num_tokens(self, text: str) -> int:
         """Calculate num tokens with tiktoken package."""
+
+        # steamship requires python 3.8, so tiktoken is fine.
         encoder = "p50k_base"
         enc = tiktoken.get_encoding(encoder)
         tokenized_text = enc.encode(text)

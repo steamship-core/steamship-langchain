@@ -22,6 +22,20 @@ Install via pip:
 pip install steamship-langchain
 ```
 
+## Adapters
+
+Initial support is offered for the following (with more to follow soon):
+- LLMS
+  - An adapter is provided for Steamship's OpenAI integration (`SteamshipGPT`)
+  - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
+- Tools
+  - Search:
+    - An adapter is provided for Steamship's SERPAPI integration (`SteamshipSERP`)
+- Memory
+  - Two adapters that provide persistent conversation memory:
+    - Windowed Memory (`SteamshipPersistentConversationMemory`)
+    - Complete Memory (`SteamshipPersistentConversationWindowMemory`)
+
 ## Example Use Cases
 
 Here are a few examples of using LangChain on Steamship:
