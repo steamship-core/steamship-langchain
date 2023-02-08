@@ -11,7 +11,7 @@ def main():
         api = client.use(package_handle="test-qa-with-sources")
 
         # Embed the State of the Union address
-        with open("state-of-the-union-2022.txt") as f:
+        with open("state_of_the_union.txt") as f:
             print(
                 colored("Saving the state of the union file to Steamship workspace...", "blue"),
                 end="",

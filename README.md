@@ -314,7 +314,7 @@ with Steamship.temporary_workspace() as client:
     api = client.use("my-langchain-app")
     
     # Upload the State of the Union address
-    with open("state-of-the-union-2022.txt") as f:
+    with open("state_of_the_union.txt") as f:
         sotu_file = File.create(client, blocks=[Block(text=f.read())])
 
     # Embed
