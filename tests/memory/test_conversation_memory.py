@@ -1,10 +1,7 @@
 import pytest
 from steamship import Steamship
 
-from steamship_langchain.memory import (
-    SteamshipPersistentConversationMemory,
-    SteamshipPersistentConversationWindowMemory,
-)
+from steamship_langchain.memory import ConversationalBufferWindowMemory, ConversationBufferMemory
 
 TEST_PROMPT = "this is a test: "
 LLM_STRING = "llm"
@@ -15,9 +12,7 @@ UNKNOWN = "unknown"
 def test_persistent_memory(client: Steamship):
     # example responses heavily borrowed from:
     # https://langchain.readthedocs.io/en/latest/modules/memory/examples/chatgpt_clone.html
-    memory_under_test = SteamshipPersistentConversationMemory(
-        client=client, file_handle="user-1234-session-1"
-    )
+    memory_under_test = ConversationBufferMemory(client=client, key="user-1234-session-1")
 
     memory_variables = memory_under_test.load_memory_variables(inputs={})
     assert len(memory_variables) == 1
@@ -130,8 +125,8 @@ round-trip min/avg/max/stddev = 14.945/14.945/14.945/0.000 ms
 def test_persistent_window_memory(client: Steamship):
     # example responses heavily borrowed from:
     # https://langchain.readthedocs.io/en/latest/modules/memory/examples/chatgpt_clone.html
-    memory_under_test = SteamshipPersistentConversationWindowMemory(
-        client=client, file_handle="user-1234-session-2", k=2
+    memory_under_test = ConversationalBufferWindowMemory(
+        client=client, key="user-1234-session-2", k=2
     )
 
     memory_variables = memory_under_test.load_memory_variables(inputs={})

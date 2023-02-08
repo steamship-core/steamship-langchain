@@ -36,11 +36,12 @@ def _block_sort_key(block: Block) -> str:
     ][0]
 
 
-class SteamshipPersistentConversationMemory(Memory):
-    """Stores conversations in a Steamship File, providing persistent storage of the conversation."""
+class ConversationBufferMemory(Memory):
+    """Stores conversations in a Steamship File (instead of a buffer str), providing persistent storage of the
+    conversation."""
 
     client: Steamship
-    file_handle: str
+    key: str
 
     human_prefix: str = "Human"
     ai_prefix: str = "AI"
@@ -93,11 +94,11 @@ class SteamshipPersistentConversationMemory(Memory):
         convo_file = self._get_conversation_file()
         if convo_file:
             return convo_file
-        return File.create(self.client, handle=self.file_handle, blocks=[])
+        return File.create(self.client, handle=self.key, blocks=[])
 
     def _get_conversation_file(self) -> Optional[File]:
         try:
-            return File.get(self.client, handle=self.file_handle)
+            return File.get(self.client, handle=self.key)
         except SteamshipError:
             return None
 
@@ -107,7 +108,7 @@ class SteamshipPersistentConversationMemory(Memory):
             convo_file.delete()
 
 
-class SteamshipPersistentConversationWindowMemory(SteamshipPersistentConversationMemory):
+class ConversationalBufferWindowMemory(ConversationBufferMemory):
     """Stores conversations in a Steamship File, providing persistent storage of the conversation, returning only the
     last k snippets of the conversation.
     """
