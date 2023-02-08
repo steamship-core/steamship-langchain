@@ -17,17 +17,7 @@ class SteamshipSERP:
         This tool uses the serpapi-wrapper plugin. This will use Google searches to provide answers.
         """
         self.client = client
-        plugin = self.client.use_plugin("serpapi-wrapper")
-
-        tag_func = getattr(plugin, "tag", None)
-        if not callable(tag_func):
-            raise SteamshipError(
-                "Incompatible plugin handle provided for GoogleSearch. Please use a compatible "
-                "plugin handle (ex: `serpapi-wrapper`)"
-            )
-
-        self.search_tool = plugin
-
+        self.search_tool = self.client.use_plugin("serpapi-wrapper")
         if cache:
             self.cache_store = KeyValueStore(
                 client=client, store_identifier="search-tool-serpapi-wrapper"

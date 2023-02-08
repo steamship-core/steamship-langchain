@@ -1,28 +1,38 @@
-from typing import Any, Dict
-
 import langchain
-from langchain.agents import initialize_agent
-from langchain.agents.tools import Tool
+from langchain.chains.summarize import load_summarize_chain
+from langchain.docstore.document import Document
+from langchain.text_splitter import CharacterTextSplitter
+from steamship import File, Task
 from steamship.invocable import PackageService, post
 
 from steamship_langchain.cache import SteamshipCache
-from steamship_langchain.llms import SteamshipGPT
-from steamship_langchain.tools import SteamshipSERP
+from steamship_langchain.llms import OpenAI
 
 
-class SelfAskWithSeachPackage(PackageService):
+class SummarizeAudioPackage(PackageService):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # Sets up the langchain global cache for LLM calls
         langchain.llm_cache = SteamshipCache(client=self.client)
+        self.llm = OpenAI(client=self.client, cache=True)
 
-    @post("/self_ask_with_search")
-    def self_ask_with_search(self, query: str) -> Dict[str, Any]:
-        """Returns a dictionary containing both the answer for the query and any intermediate steps taken."""
-        llm = SteamshipGPT(client=self.client, temperature=0.0, cache=True)
-        serp_tool = SteamshipSERP(client=self.client, cache=True)
-        tools = [Tool(name="Intermediate Answer", func=serp_tool.search)]
-        self_ask_with_search = initialize_agent(
-            tools, llm, agent="self-ask-with-search", verbose=False, return_intermediate_steps=True
+    @post("summarize_file")
+    def summarize_file(self, file_handle: str) -> str:
+        file = File.get(self.client, handle=file_handle)
+        text_splitter = CharacterTextSplitter()
+        texts = []
+        for block in file.blocks:
+            texts.extend(text_splitter.split_text(block.text))
+        docs = [Document(page_content=t) for t in texts]
+        chain = load_summarize_chain(self.llm, chain_type="map_reduce")
+        return chain.run(docs)
+
+    @post("summarize_audio_file")
+    def summarize_audio_file(self, file_handle: str) -> Task[str]:
+        transcriber = self.client.use_plugin("whisper-s2t-blockifier")
+        audio_file = File.get(self.client, handle=file_handle)
+        transcribe_task = audio_file.blockify(plugin_instance=transcriber.handle)
+        return self.invoke_later(
+            "summarize_file",
+            wait_on_tasks=[transcribe_task],
+            arguments={"file_handle": audio_file.handle},
         )
-        return self_ask_with_search(query)

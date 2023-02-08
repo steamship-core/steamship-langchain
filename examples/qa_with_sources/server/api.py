@@ -9,7 +9,7 @@ from steamship.data.plugin.index_plugin_instance import SearchResult
 from steamship.invocable import PackageService, post
 
 from steamship_langchain.cache import SteamshipCache
-from steamship_langchain.llms import SteamshipGPT
+from steamship_langchain.llms import OpenAI
 
 
 class QuestionAnsweringPackage(PackageService):
@@ -18,7 +18,7 @@ class QuestionAnsweringPackage(PackageService):
         # set up LLM cache
         langchain.llm_cache = SteamshipCache(self.client)
         # set up LLM
-        self.llm = SteamshipGPT(client=self.client, temperature=0, cache=True, max_words=250)
+        self.llm = OpenAI(client=self.client, temperature=0, cache=True, max_words=250)
         # create a persistent embedding store
         self.index = self.client.use_plugin(
             "embedding-index",
