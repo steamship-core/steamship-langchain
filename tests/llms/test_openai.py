@@ -8,11 +8,7 @@ from steamship_langchain.llms import OpenAI
 
 @pytest.mark.usefixtures("client")
 def test_openai(client: Steamship):
-    """Basic tests of the OpenAI plugin wrapper.
-
-    NOTE: These tests are WAY more fragile than they should be. A proper
-    approach to avoid variability in the output is desperately needed.
-    """
+    """Basic tests of the OpenAI plugin wrapper."""
     llm_under_test = OpenAI(client=client, temperature=0)
 
     # simple prompt
@@ -37,12 +33,8 @@ Follow up: When did the Twins win the World Series for the first time?"""
     generated = llm_under_test(
         WIKI_PROMPT.format(input=query, agent_scratchpad=""), stop=["\nObservation 1"]
     )
-    assert (
-        generated.strip()
-        == """Thought 1: I need to search Twins and World Series, and find who was the president the
-first time the Twins won the World Series.
-Action 1: Search[Twins]"""
-    )
+    assert generated.strip().startswith("Thought 1: ")
+    assert generated.strip().endswith("Action 1: Search[Twins]")
 
 
 @pytest.mark.usefixtures("client")
