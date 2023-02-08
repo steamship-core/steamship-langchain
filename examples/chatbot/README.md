@@ -1,16 +1,18 @@
-# Chatbot Example
+# ChatBot Example
 
 This is an example of deploying an app using a LangChain-based ChatBot on Steamship.
 
 ## Try it out
 
-Install dependencies:
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
+
+Or, install dependencies:
 ```commandline
 pip install steamship-langchain
 pip install termcolor
 ```
 
-Run the client:
+And run the client:
 ```commandline
 python client/client.py
 ```

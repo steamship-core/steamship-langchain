@@ -11,7 +11,7 @@ def main():
 
     churchill_yt_url = "https://www.youtube.com/watch?v=MkTw3_PmKtc"
     with Steamship.temporary_workspace() as client:
-        api = client.use("demo-summarize-audio")
+        api = client.use("test-summarize-audio")
         yt_importer = client.use_plugin("youtube-file-importer")
 
         print(colored(f"Importing {churchill_yt_url}...", "blue"), end="", flush=True)
