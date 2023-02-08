@@ -52,7 +52,7 @@ The examples use temporary workspaces to provide full cleanup during experimenta
 For production uses, persistent workspaces can be created and retrieved via `Steamship(workspace_handle="my_workspace")` .
 
 > **NOTE**
-> Thesee examples omit `import` blocks. Please consult the `examples/` directory for complete source code. 
+> These examples omit `import` blocks. Please consult the `examples/` directory for complete source code. 
 
 > **NOTE** 
 > Client examples assume that the user has a Steamship API key and that it is exposed to the environment (see: [API Keys](#api-keys))
