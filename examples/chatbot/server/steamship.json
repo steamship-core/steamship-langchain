@@ -1,7 +1,7 @@
 {
 	"type": "package",
 	"handle": "test-chatbot",
-	"version": "0.0.1",
+	"version": "0.0.3",
 	"description": null,
 	"author": "doug",
 	"entrypoint": "Unused",

@@ -1,6 +1,6 @@
 {
 	"type": "package",
-	"handle": "demo-summarize-audio",
+	"handle": "test-summarize-audio",
 	"version": "0.0.2",
 	"description": null,
 	"author": "doug",
