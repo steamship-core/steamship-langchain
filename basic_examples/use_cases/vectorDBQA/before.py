@@ -13,7 +13,8 @@ with Path("state_of_the_union.txt").open() as f:
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_text(state_of_the_union)
 
-embeddings = OpenAIEmbeddings(query_model_name="text-similarity-curie-001", document_model_name="text-similarity-curie-001")
+embeddings = OpenAIEmbeddings(query_model_name="text-similarity-curie-001",
+                              document_model_name="text-similarity-curie-001")
 docsearch = FAISS.from_texts(texts,
                              embeddings,
                              metadatas=[{"source": i} for i in range(len(texts))])

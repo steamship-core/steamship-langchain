@@ -14,8 +14,9 @@ with Path("state_of_the_union.txt").open() as f:
 text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 texts = text_splitter.split_text(state_of_the_union)
 
-embeddings = OpenAIEmbeddings()
-client = Steamship()
+embeddings = OpenAIEmbeddings(document_model_name="text-similarity-babbage-001",
+                              query_model_name="text-similarity-babbage-001")
+client = Steamship(profile="staging")
 
 docsearch = SteamshipVectorStore.from_texts(texts,
                                             embeddings,

@@ -42,7 +42,7 @@ class SteamshipVectorStore(VectorStore):
                     "instance_handle": self.index_name,
                     "fetch_if_exists": True,
                     "config": {
-                        "model": "text-similarity-curie-001", # TODO: embedding.document_model_name
+                        "model": embedding.document_model_name,
                         "dimensionality": 4096,
                     },
                 }
