@@ -4,13 +4,15 @@ This is an example of deploying an app using a `self-ask-with-search` LangChain 
 
 ## Try it out
 
-Install dependencies:
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Self-Ask-With-Search-with-LangChain-and-Steamship)
+
+Or, install dependencies:
 ```commandline
 pip install steamship-langchain
 pip install termcolor
 ```
 
-Run the client:
+And run the client:
 ```commandline
 python client/client.py
 ```

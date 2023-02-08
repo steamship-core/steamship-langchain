@@ -5,13 +5,15 @@ Steamship's embeddings support is used to find and provide sources for the infer
 
 ## Try it out
 
-Install dependencies:
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Question-Answering-with-Sources-using-LangChain-on-Steamship)](https://replit.com/@SteamshipDoug/Question-Answering-with-Sources-using-LangChain-on-Steamship)
+
+Or, install dependencies:
 ```commandline
 pip install steamship-langchain
 pip install termcolor
 ```
 
-Run the client:
+And run the client:
 ```commandline
 python client/client.py
 ```
