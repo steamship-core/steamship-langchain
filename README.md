@@ -27,7 +27,7 @@ pip install steamship-langchain
 ## Adapters
 
 Initial support is offered for the following (with more to follow soon):
-- LLMS
+- LLMs
   - An adapter is provided for Steamship's OpenAI integration (`steamship_langchain.llms.OpenAI`)
   - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
 - Tools
