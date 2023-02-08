@@ -4,13 +4,15 @@ This is an example of deploying an app using Steamship's LLM integration with La
 
 ## Try it out
 
-Install dependencies:
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Simple-LangChain-Prompting-on-Steamship)](https://replit.com/@SteamshipDoug/Simple-LangChain-Prompting-on-Steamship)
+
+Or, install dependencies:
 ```commandline
 pip install steamship-langchain
 pip install termcolor
 ```
 
-Run the client:
+And run the client:
 ```commandline
 python client/client.py
 ```

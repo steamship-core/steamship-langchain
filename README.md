@@ -27,7 +27,7 @@ pip install steamship-langchain
 ## Adapters
 
 Initial support is offered for the following (with more to follow soon):
-- LLMS
+- LLMs
   - An adapter is provided for Steamship's OpenAI integration (`steamship_langchain.llms.OpenAI`)
   - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
 - Tools
@@ -35,8 +35,8 @@ Initial support is offered for the following (with more to follow soon):
     - An adapter is provided for Steamship's SERPAPI integration (`SteamshipSERP`)
 - Memory
   - Two adapters that provide persistent conversation memory:
-    - Complete Memory (`steamship_langchain.memory.ConversationalBufferMemory`)
-    - Windowed Memory (`steamship_langchain.memory.ConversationalBufferWindowMemory`)
+    - Complete Memory (`steamship_langchain.memory.ConversationBufferMemory`)
+    - Windowed Memory (`steamship_langchain.memory.ConversationBufferWindowMemory`)
 
 ## Example Use Cases
 
@@ -52,7 +52,7 @@ The examples use temporary workspaces to provide full cleanup during experimenta
 For production uses, persistent workspaces can be created and retrieved via `Steamship(workspace_handle="my_workspace")` .
 
 > **NOTE**
-> Thesee examples omit `import` blocks. Please consult the `examples/` directory for complete source code. 
+> These examples omit `import` blocks. Please consult the `examples/` directory for complete source code. 
 
 > **NOTE** 
 > Client examples assume that the user has a Steamship API key and that it is exposed to the environment (see: [API Keys](#api-keys))
@@ -133,20 +133,21 @@ Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (ful
 
 ```python
 from steamship_langchain.llms import OpenAI
-from steamship_langchain.memory import ConversationalBufferWindowMemory
+from steamship_langchain.memory import ConversationBufferWindowMemory
+
 
 @post("/send_message")
 def send_message(self, message: str, chat_history_handle: str) -> str:
-    mem = ConversationalBufferWindowMemory(client=self.client,
-                                           key=chat_history_handle,
-                                           k=2)
-    chatgpt = LLMChain(
-        llm=OpenAI(client=self.client, temperature=0),
-        prompt=CHATBOT_PROMPT, 
-        memory=mem,
-    )
-    
-    return chatgpt.predict(human_input=message)
+  mem = ConversationBufferWindowMemory(client=self.client,
+                                       key=chat_history_handle,
+                                       k=2)
+  chatgpt = LLMChain(
+    llm=OpenAI(client=self.client, temperature=0),
+    prompt=CHATBOT_PROMPT,
+    memory=mem,
+  )
+
+  return chatgpt.predict(human_input=message)
 ```
 
 #### Client Snippet

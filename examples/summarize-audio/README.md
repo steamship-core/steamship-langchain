@@ -1,18 +1,26 @@
 # Summarize Audio (Async Chaining)
 
+> [![stability-experimental](https://img.shields.io/badge/stability-experimental-orange.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#experimental)
+>
+> Audio transcription support not yet considered fully-production ready on Steamship. We are working hard on
+> productionizing support for audio transcription at scale, but there may be some existing issues that you encounter
+> as you try this out.
+
 This is an example of deploying an app LangChain for summarization on Steamship.
 It provides an integration with one of Steamship's audio transcription plugins
 and a small introduction to the Task system.
 
 ## Try it out
 
-Install dependencies:
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Summarize-Audio-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Summarize-Audio-with-LangChain-and-Steamship)
+
+Or, install dependencies:
 ```commandline
 pip install steamship-langchain
 pip install termcolor
 ```
 
-Run the client:
+And run the client:
 ```commandline
 python client/client.py
 ```
