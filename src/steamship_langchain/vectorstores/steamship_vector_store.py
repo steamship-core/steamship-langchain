@@ -37,13 +37,14 @@ class SteamshipVectorStore(VectorStore):
             plugin_handle="embedding-index",
             instance_handle=self.index_name,
             config={
-                "embedder": {  # TODO: This needs to be derived from embedding_function
-                    "plugin_handle": "openai-embedder",
+                "embedder": {
+                    "plugin_handle": "openai-embedder-test",
                     "instance_handle": self.index_name,
                     "fetch_if_exists": True,
                     "config": {
                         "model": embedding.document_model_name,
-                        "dimensionality": 4096,
+                        "kind_filter": "",
+                        "name_filter": ""
                     },
                 }
             },
@@ -79,7 +80,7 @@ class SteamshipVectorStore(VectorStore):
         raise NotImplementedError("Max marginal relevance search not supported yet.")
 
     @classmethod
-    def from_texts(cls, texts: List[str],
+    def from_texts(cls, client: Steamship, texts: List[str],
                    embedding: Embeddings,  # TODO: Use interface for embedding models
                    metadatas: Optional[List[dict]] = None,
                    **kwargs: Any) -> VectorStore:
@@ -100,7 +101,6 @@ class SteamshipVectorStore(VectorStore):
                         embeddings = OpenAIEmbeddings()
                         svs = SteamshipVectorStore.from_texts(texts, embeddings)
                 """
-        client = Steamship()
         index_name = uuid.uuid4().hex
         svs = cls(client=client,
                   index_name=index_name,
