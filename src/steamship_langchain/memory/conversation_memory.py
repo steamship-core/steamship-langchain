@@ -108,7 +108,7 @@ class ConversationBufferMemory(Memory):
             convo_file.delete()
 
 
-class ConversationalBufferWindowMemory(ConversationBufferMemory):
+class ConversationBufferWindowMemory(ConversationBufferMemory):
     """Stores conversations in a Steamship File, providing persistent storage of the conversation, returning only the
     last k snippets of the conversation.
     """
