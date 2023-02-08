@@ -77,16 +77,16 @@ class OpenAI(BaseOpenAI):
         return {**normal_params, **self.model_kwargs}
 
     @root_validator()
-    def validate_environment(self, values: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_environment(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         return values
 
     @root_validator(pre=True)
-    def add_default_request_timeout(self, values: Dict[str, Any]) -> Dict[str, Any]:
+    def add_default_request_timeout(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         values["request_timeout"] = values.get("request_timeout", 600)
         return values
 
     @root_validator(pre=True)
-    def raise_on_unsupported_arguments(self, values: Dict[str, Any]) -> Dict[str, Any]:
+    def raise_on_unsupported_arguments(cls, values: Dict[str, Any]) -> Dict[str, Any]:
 
         if unsupported_arguments := set(values.keys()) - ARGUMENT_WHITELIST:
             raise NotImplementedError(f"Found unsupported argument: {unsupported_arguments}")

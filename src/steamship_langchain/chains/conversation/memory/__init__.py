@@ -1,3 +1,3 @@
-from steamship_langchain.memory import ConversationalBufferWindowMemory
+from steamship_langchain.memory import ConversationBufferWindowMemory
 
-__all__ = ["ConversationalBufferWindowMemory"]
+__all__ = ["ConversationBufferWindowMemory"]

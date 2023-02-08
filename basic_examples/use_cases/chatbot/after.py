@@ -1,8 +1,8 @@
 """Demonstration of chatbot creation with Steamship"""
-
+from steamship import Steamship
 
 from steamship_langchain import LLMChain, OpenAI, PromptTemplate
-from steamship_langchain.chains.conversation.memory import ConversationalBufferWindowMemory
+from steamship_langchain.chains.conversation.memory import ConversationBufferWindowMemory
 
 template = """Assistant is a large language model trained by OpenAI.
 
@@ -15,14 +15,14 @@ Overall, Assistant is a powerful tool that can help with a wide range of tasks a
 {history}
 Human: {human_input}
 Assistant:"""
-
+client = Steamship()
 prompt = PromptTemplate(input_variables=["history", "human_input"], template=template)
 
 chatgpt_chain = LLMChain(
-    llm=OpenAI(temperature=0),
+    llm=OpenAI(client=client, temperature=0),
     prompt=prompt,
     verbose=True,
-    memory=ConversationalBufferWindowMemory(k=2),
+    memory=ConversationBufferWindowMemory(client=client, key="test", k=2),
 )
 
 output = chatgpt_chain.predict(
