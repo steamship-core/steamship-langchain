@@ -1,6 +1,7 @@
+"""Demonstration of calling OpenAI's LLM without Steamship"""
 from langchain.llms import OpenAI
 
-llm = OpenAI(model_name="text-ada-001", n=2, best_of=2)
+llm = OpenAI(model_name="text-ada-001", n=2, best_of=2, temperature=0.9)
 
 completion = llm("Tell me a joke")
 print(completion)

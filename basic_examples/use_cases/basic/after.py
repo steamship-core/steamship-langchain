@@ -1,10 +1,11 @@
+"""Demonstration of calling OpenAI's LLM without Steamship"""
 from steamship import Steamship
 
 from steamship_langchain import OpenAI
 
 client = Steamship()
 
-llm = OpenAI(client=client, model_name="text-ada-001", n=2, best_of=2)
+llm = OpenAI(client=client, model_name="text-ada-001", n=2, best_of=2, temperature=0.9)
 # TODO: Stop using client=client, instead use steamship_langchain.client = client
 
 completion = llm("Tell me a joke")

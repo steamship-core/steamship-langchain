@@ -1,4 +1,5 @@
-from langchain import OpenAI, LLMChain, PromptTemplate
+"""Demonstration of chatbot creation without Steamship"""
+from langchain import LLMChain, OpenAI, PromptTemplate
 from langchain.chains.conversation.memory import ConversationalBufferWindowMemory
 
 template = """Assistant is a large language model trained by OpenAI.
@@ -13,10 +14,7 @@ Overall, Assistant is a powerful tool that can help with a wide range of tasks a
 Human: {human_input}
 Assistant:"""
 
-prompt = PromptTemplate(
-    input_variables=["history", "human_input"],
-    template=template
-)
+prompt = PromptTemplate(input_variables=["history", "human_input"], template=template)
 
 chatgpt_chain = LLMChain(
     llm=OpenAI(temperature=0),
@@ -26,7 +24,8 @@ chatgpt_chain = LLMChain(
 )
 
 output = chatgpt_chain.predict(
-    human_input="I want you to act as a Linux terminal. I will type commands and you will reply with what the terminal should show. I want you to only reply wiht the terminal output inside one unique code block, and nothing else. Do not write explanations. Do not type commands unless I instruct you to do so. When I need to tell you something in English I will do so by putting text inside curly brackets {like this}. My first command is pwd.")
+    human_input="I want you to act as a Linux terminal. I will type commands and you will reply with what the terminal should show. I want you to only reply wiht the terminal output inside one unique code block, and nothing else. Do not write explanations. Do not type commands unless I instruct you to do so. When I need to tell you something in English I will do so by putting text inside curly brackets {like this}. My first command is pwd."
+)
 print(output)
 
 output = chatgpt_chain.predict(human_input="ls ~")
