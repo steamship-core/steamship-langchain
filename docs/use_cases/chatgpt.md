@@ -1,8 +1,14 @@
-"""Demonstration of chatbot creation with Steamship"""
+
+# ChatGPT
+
+```diff
+from langchain import LLMChain, PromptTemplate
 from steamship import Steamship
 
-from steamship_langchain import LLMChain, OpenAI, PromptTemplate
-from steamship_langchain.chains.conversation.memory import ConversationBufferWindowMemory
+- from langchain import OpenAI
++ from steamship_langchain import OpenAI
+- from langchain.chains.conversation.memory import ConversationBufferWindowMemory
++ from steamship_langchain.chains.conversation.memory import ConversationBufferWindowMemory
 
 template = """Assistant is a large language model trained by OpenAI.
 
@@ -32,3 +38,8 @@ print(output)
 
 output = chatgpt_chain.predict(human_input="ls ~")
 print(output)
+
+output = chatgpt_chain.predict(human_input="ls ~")
+print(output)
+
+```

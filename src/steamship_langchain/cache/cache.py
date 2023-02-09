@@ -9,7 +9,7 @@ from steamship.utils.kv_store import KeyValueStore
 
 
 class SteamshipCache(BaseCache):
-    """Provide basic Steamship-compatible caching for LangChain LLM calls."""
+    """Provide getting_strarted Steamship-compatible caching for LangChain LLM calls."""
 
     client: Steamship
     key_store_map: Dict[str, KeyValueStore]
