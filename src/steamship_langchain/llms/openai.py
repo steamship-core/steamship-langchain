@@ -51,7 +51,9 @@ class OpenAI(BaseOpenAI):
         }
 
     def _invocation_params(self, stop: Optional[List[str]] = None):
-        stop_str = ",".join(stop) if stop is not None and not isinstance(stop, str) else (stop or "")
+        stop_str = (
+            ",".join(stop) if stop is not None and not isinstance(stop, str) else (stop or "")
+        )
 
         return {
             "stop": stop_str,
@@ -107,14 +109,14 @@ class OpenAI(BaseOpenAI):
         # TODO(douglas-reid): add validation + stop param checking, etc.
 
         sub_prompts = [
-            prompts[i: i + self.batch_size] for i in range(0, len(prompts), self.batch_size)
+            prompts[i : i + self.batch_size] for i in range(0, len(prompts), self.batch_size)
         ]
         generations = []
         total_token_usage = defaultdict(int)
         for _prompts in sub_prompts:
             sub_generations, token_usage = self._batch(prompts=_prompts, stop=stop)
             for i in range(0, len(sub_generations), self.n):
-                generations.append(sub_generations[i: i + self.n])
+                generations.append(sub_generations[i : i + self.n])
             for key, usage in token_usage.items():
                 total_token_usage[key] += usage
 
@@ -132,7 +134,7 @@ class OpenAI(BaseOpenAI):
         raise RuntimeError("completion_with_retry is not supported, please use .generate instead.")
 
     def _batch(
-            self, prompts: List[str], stop: Optional[List[str]] = None
+        self, prompts: List[str], stop: Optional[List[str]] = None
     ) -> (List[Generation], Dict[str, int]):
         # rudimentary batching implementation
 

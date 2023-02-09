@@ -17,10 +17,12 @@ texts = text_splitter.split_text(state_of_the_union)
 embedding = OpenAIEmbeddings()
 client = Steamship()
 
-docsearch = SteamshipVectorStore.from_texts(client=client,
-                                            texts=texts,
-                                            embedding=embedding,
-                                            metadatas=[{"source": i} for i in range(len(texts))])
+docsearch = SteamshipVectorStore.from_texts(
+    client=client,
+    texts=texts,
+    embedding=embedding,
+    metadatas=[{"source": i} for i in range(len(texts))],
+)
 
 query = "What did the president say about Justice Breyer"
 searched_docs = docsearch.similarity_search(query)
@@ -29,26 +31,30 @@ for doc in searched_docs:
 
 print("-------------------")
 
-chain = VectorDBQAWithSourcesChain.from_chain_type(OpenAI(client=client, temperature=0),
-                                                   chain_type="stuff",
-                                                   vectorstore=docsearch)
+chain = VectorDBQAWithSourcesChain.from_chain_type(
+    OpenAI(client=client, temperature=0), chain_type="stuff", vectorstore=docsearch
+)
 
-output = chain({"question": "What did the president say about Justice Breyer"}, return_only_outputs=True)
+output = chain(
+    {"question": "What did the president say about Justice Breyer"}, return_only_outputs=True
+)
 print(output)
 print("-------------------")
 
-chain = VectorDBQAWithSourcesChain.from_chain_type(OpenAI(client=client, temperature=0),
-                                                   chain_type="map_reduce",
-                                                   vectorstore=docsearch)
+chain = VectorDBQAWithSourcesChain.from_chain_type(
+    OpenAI(client=client, temperature=0), chain_type="map_reduce", vectorstore=docsearch
+)
 
-output = chain({"question": "What did the president say about Justice Breyer"}, return_only_outputs=True)
+output = chain(
+    {"question": "What did the president say about Justice Breyer"}, return_only_outputs=True
+)
 
 print(output)
 print("-------------------")
 
-chain = load_qa_with_sources_chain(OpenAI(client=client, temperature=0),
-                                   chain_type="map_reduce",
-                                   return_intermediate_steps=True)
+chain = load_qa_with_sources_chain(
+    OpenAI(client=client, temperature=0), chain_type="map_reduce", return_intermediate_steps=True
+)
 
 output = chain({"input_documents": searched_docs, "question": query}, return_only_outputs=True)
 print(output)

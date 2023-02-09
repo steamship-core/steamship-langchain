@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from langchain.agents.react.wiki_prompt import WIKI_PROMPT
 from langchain.agents.self_ask_with_search.prompt import PROMPT
+
 # from langchain.llms.loading import load_llm
 from langchain.llms.loading import load_llm
 from steamship import Steamship
@@ -28,8 +29,8 @@ def test_openai(client: Steamship):
         PROMPT.format(input=query, agent_scratchpad=""), stop=["Intermediate answer: "]
     )
     assert (
-            generated.strip()
-            == """Yes.
+        generated.strip()
+        == """Yes.
 Follow up: When did the Twins win the World Series for the first time?"""
     )
 
@@ -91,7 +92,7 @@ def test_openai_extra_kwargs(client: Steamship) -> None:
     assert llm.model_kwargs == {"foo": 3, "bar": 2}
 
     # Test that if provided twice it errors
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError):  # noqa: PT011
         OpenAI(client=client, foo=3, model_kwargs={"foo": 2})
 
 
@@ -105,6 +106,7 @@ def test_openai_stop_valid(client: Steamship) -> None:
     second_output = second_llm(query, stop=["3"])
     # Because it stops on new lines, shouldn't return anything
     assert first_output == second_output
+
 
 @pytest.mark.usefixtures("client")
 def test_saving_loading_llm(client: Steamship, tmp_path: Path) -> None:
