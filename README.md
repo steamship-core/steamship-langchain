@@ -1,6 +1,6 @@
 # Steamship Python Client Library For LangChain (🦜️🔗)
 
-[![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
+[![Steamship](https://raw.githubusercontent.com/steamship-core/python-client/main/badge.svg)](https://www.steamship.com/build/langchain-apps?utm_source=github&utm_medium=badge&utm_campaign=github_repo&utm_id=github_repo)
 
 [Steamship](https://steamship.com/) is the fastest way to build, ship, and use full-lifecycle language AI.
 
@@ -15,6 +15,8 @@ LangChain developers to rapidly deploy their apps on Steamship to automatically 
 - Seamless integration with other Steamship skills (ex: audio transcription) 
 - Usage Metrics and Logging
 - And more...
+
+Read more about Steamship and LangChain on our [website](https://www.steamship.com/build/langchain-apps?utm_source=github&utm_medium=explainer&utm_campaign=github_repo&utm_id=github_repo). 
 
 ## Installing
 
