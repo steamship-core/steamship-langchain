@@ -1,7 +1,7 @@
 LLMs
 ==========================
 
-Large Language Models (LLMs) are supported by Steamship using Steamship compatible LLMs found under `steamship_langchain.llms`.
+Large Language Models (LLMs) are supported by Steamship using Steamship compatible LLMs found under ``steamship_langchain.llms``.
 Using Steamship LLM adapters gives you access to our distributed cloud, using our cloud vs local LLMs has several advantages:
 
 * ✅ You won't have to worry about installing upstream dependencies.

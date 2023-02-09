@@ -40,6 +40,7 @@ class OpenAI(BaseOpenAI):
     """
 
     client: Steamship  # We can use validate_environment to add the client here
+    batch_task_timeout_seconds: int = 10 * 60  # 10 minute limit on generation tasks
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
@@ -154,7 +155,9 @@ class OpenAI(BaseOpenAI):
         try:
             prompt_file = File.create(client=self.client, blocks=blocks)
             task = llm_plugin.tag(doc=prompt_file)
-            task.wait()  # TODO(douglas-reid): put in timeout, based on configuration
+            # the llm_plugin handles retries and backoff. this wait()
+            # will allow for that to happen.
+            task.wait(max_timeout_s=self.batch_task_timeout_seconds)
             generation_file = task.output.file
 
             for text_block in generation_file.blocks:
