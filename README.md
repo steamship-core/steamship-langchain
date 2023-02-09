@@ -16,7 +16,7 @@ LangChain developers to rapidly deploy their apps on Steamship to automatically 
 - Usage Metrics and Logging
 - And more...
 
-Read more about Steamship and LangChain on our [website](https://www.steamship.com/build/langchain-apps?utm_source=github&utm_medium=explainer&utm_campaign=github_repo&utm_id=github_repo). 
+Read more about Steamship and LangChain on our [website](https://www.steamship.com/build/langchain-apps?utm_source=github&utm_medium=explainer&utm_campaign=github_repo&utm_id=github_langchain_repo). 
 
 ## Installing
 
