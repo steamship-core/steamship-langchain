@@ -1,10 +1,10 @@
 # Quickstart Guide
 
-This tutorial gives you a quick walkthrough about how to move your LangChain app into production using Steamship.
+This tutorial explains how to move your LangChain app into production using Steamship.
 
 ## Installation
 
-To get started, install LangChain with the following command:
+To get started, install Steamship's LangChain support library with the following command:
 
 ```bash
 pip install steamship-langchain
@@ -13,7 +13,7 @@ pip install steamship-langchain
 
 ## Environment Setup
 
-Steamship's backend provides access to external model providers, data stores, and apis without you having to install additional libraries or sign up for new API Keys. 
+Steamship's backend provides access to external model providers, data stores, and apis without the need to install additional libraries or sign up for new API Keys. 
 
 To get access, you'll need to store your (Steamship API key)[https://steamship.com/account/api.] as an environment variable:
 
@@ -40,7 +40,7 @@ Deploying your LangChain app to Steamship involves 3 simple steps:
 
 Using Steamship's adapters will instruct your LangChain to use our infrastructure. Today we have adapters for LLMs, Memory, and Tools. 
 
-For a detailed overview of our adapters and their status click here.
+For a detailed overview of our adapters, check out the adapters overview page.
 
 ```diff
 - from langchain.llms import OpenAI
@@ -59,7 +59,9 @@ output = llm("Tell me a joke")
 
 ### Step 2: Create a Steamship package 
 
-Steamship apps are run behind API endoints that are secured. 
+Steamship apps run behind API endoints that are scalable and secure. 
+To turn your LangChain into an API you'll have to wrap it in our PackageService scaffolding. 
+A PackageService defines API endpoints using annotations:
 
 ```python
 from steamship_langchain.llms import OpenAI
@@ -80,3 +82,8 @@ class JokeWizard(PackageService):
 
 ### Step 3: Ship deploy 
 
+That's it, now you can deploy your package:
+
+```bash
+ship deploy
+```

@@ -1,13 +1,12 @@
 Welcome to Steamship 4 LangChain
-==========================
+=================================
 
 ⚡ Deploying 🦜️🔗LangChain LLM apps to production ⚡
-
 
 Getting Started
 ----------------
 
-Checkout the below guide for a walkthrough of how to get started moving Language Model application to production.
+Checkout the below guide for a walkthrough of how to move your Language Model application to production.
 
 - `Getting Started Documentation <./getting_started/getting_started.html>`_
 
@@ -23,23 +22,24 @@ Checkout the below guide for a walkthrough of how to get started moving Language
 Adapters
 -----------
 
-To leverage the module
+We've built adapters for LangChain's most important modules and components.
+Using these adapters enables you to leverage Steamship's infrastructure including its scalable execution framework, caching, and databases.
+
+To guide you through the upgrade process we've included how-to guides and some examples for each LangChain module.
+
+Note: We're in alpha, so we don't have full support on all module's yet. We're confident we cover the most interesting use-cases though.
+Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for an overview of what is supported.
 
 
-are six main modules that LangChain provides support for.
-For each module we provide some examples to get started, how-to guides, reference docs, and conceptual guides.
-These modules are, in increasing order of complexity:
+- `Prompts <./adapters/prompts.html>`_
 
+- `LLMs <./adapters/llms.html>`_
 
-- `Prompts <./adapters/prompts.html>`_: This includes prompt management, prompt optimization, and prompt serialization.
+- `Chains <./adapters/chains.html>`_
 
-- `LLMs <./adapters/llms.html>`_: This includes a generic interface for all LLMs, and common utilities for working with LLMs.
+- `Agents <./adapters/agents.html>`_
 
-- `Chains <./adapters/chains.html>`_: Chains go beyond just a single LLM call, and are sequences of calls (whether to an LLM or a different utility). LangChain provides a standard interface for chains, lots of integrations with other tools, and end-to-end chains for common applications.
-
-- `Agents <./adapters/agents.html>`_: Agents involve an LLM making decisions about which Actions to take, taking that Action, seeing an Observation, and repeating that until done. LangChain provides a standard interface for agents, a selection of agents to choose from, and examples of end to end agents.
-
-- `Memory <./adapters/memory.html>`_: Memory is the concept of persisting state between calls of a chain/agent. LangChain provides a standard interface for memory, a collection of memory implementations, and examples of chains/agents that use memory.
+- `Memory <./adapters/memory.html>`_
 
 
 .. toctree::
@@ -57,9 +57,9 @@ These modules are, in increasing order of complexity:
 Use Cases
 ----------
 
-The above adapters cover most of LangChain's use-cases. Below are some of the common use cases supported by Steamship.
+The above adapters cover a ton of LangChain's use-cases. Below are some of the common use cases supported by Steamship.
 
-- `Agents <./use_cases/chatgpt.html>`_: Agents are systems that use a language model to interact with other tools. These can be used to do more grounded question/answering, interact with APIs, or even take actions.
+- `ChatGPT <./use_cases/chatgpt.html>`_
 
 
 .. toctree::
@@ -68,13 +68,13 @@ The above adapters cover most of LangChain's use-cases. Below are some of the co
    :name: use_cases
    :hidden:
 
-   ./use_cases/chatgpt.md
+   ./use_cases/chatgpt.ipynb
 
 
 Coverage and Roadmap
------------
+----------------------
 
-Support for LangChain is currently in alpha. But we're all in on creating the best LangChain infra stack to date.
+Support for LangChain is currently in alpha. But we're all in on creating the best LangChain infra stack.
 
 We've compiled a status page to track what modules & use-cases are officially supported by Steamship.
 
@@ -93,7 +93,7 @@ Something's missing? We'd love to hear from you. Please reach out to: hello@stea
 
 
 Feedback and Support
------------
+----------------------
 Have any feedback on this package? Or on Steamship in general?
 
 We'd love to hear from you. Please reach out to: hello@steamship.com, or join us on our Discord.

@@ -15,7 +15,7 @@ The following sections of documentation are provided:
 
 - `Getting Started <./llms/getting_started.html>`_: An overview of how to use Steamship LLM adapters.
 
-- `How-To Guides <./llms/llm_caching.html>`_: A collection of how-to guides. These highlight how to accomplish various objectives with our LLM class, as well as how to integrate with various LLM providers.
+- `LLM Caching <./llms/llm_caching.html>`_: Save money by caching results of your individual LLM calls.
 
 - `Reference <../reference/modules/llms.html>`_: API reference documentation for all LLM classes.
 

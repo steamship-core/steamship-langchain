@@ -38,6 +38,12 @@ Initial support is offered for the following (with more to follow soon):
     - Complete Memory (`steamship_langchain.memory.ConversationBufferMemory`)
     - Windowed Memory (`steamship_langchain.memory.ConversationBufferWindowMemory`)
 
+## 📖 Documentation
+Please see here for full documentation on:
+
+Getting started (installation, setting up the environment, simple examples)
+How-To examples (demos, integrations, helper functions)
+
 ## Example Use Cases
 
 Here are a few examples of using LangChain on Steamship:
