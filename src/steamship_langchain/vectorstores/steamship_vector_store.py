@@ -3,7 +3,6 @@ from itertools import zip_longest
 from typing import Any, Iterable, List, Optional
 
 from langchain.docstore.document import Document
-from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import VectorStore
 from steamship import Steamship, Tag
 
@@ -22,21 +21,13 @@ class SteamshipVectorStore(VectorStore):
     def __init__(
         self,
         client: Steamship,
-        embedding: OpenAIEmbeddings,
+        embedding: str,
         index_name: Optional[str] = None,
     ):
         """Initialize with necessary components."""
-        if not isinstance(embedding, OpenAIEmbeddings):
-            raise NotImplementedError("Only OpenAIEmbeddings are supported.")
 
         self.client = client
         self.index_name = index_name or uuid.uuid4().hex
-
-        if embedding.document_model_name != embedding.query_model_name:
-            raise RuntimeError(
-                "SteamshipVectorStore only supports using the same "
-                "OpenAI Embedding model for documents and queries."
-            )
 
         self.index = client.use_plugin(
             plugin_handle="embedding-index",
@@ -47,7 +38,7 @@ class SteamshipVectorStore(VectorStore):
                     "instance_handle": self.index_name,
                     "fetch_if_exists": True,
                     "config": {
-                        "model": embedding.document_model_name,
+                        "model": embedding,
                     },
                 }
             },
@@ -89,7 +80,7 @@ class SteamshipVectorStore(VectorStore):
         cls,
         client: Steamship,
         texts: List[str],
-        embedding: OpenAIEmbeddings,  # TODO: Use interface for embedding models
+        embedding: str,
         metadatas: Optional[List[dict]] = None,
         **kwargs: Any
     ) -> VectorStore:

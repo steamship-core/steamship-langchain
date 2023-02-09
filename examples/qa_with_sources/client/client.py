@@ -31,25 +31,17 @@ def main():
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
 
         response = api.invoke("/qa_with_sources", query=query)
-        print(colored("Answer: ", "blue"), f"{response['output_text'].strip()}")
+        print(colored("Answer: ", "blue"), f"{response['result'].strip()}")
 
         # Print sources (with text)
-        last_line = response["output_text"].splitlines()[-1:][0]
+        sources = response["source_documents"]
 
-        if "SOURCES: " not in last_line:
-            print(last_line)
+        if not sources:
             print(colored("No sources provided in response.", "red"))
             return
 
-        sources_list = last_line[len("SOURCES: ") :]
-
-        for source in sources_list.split(","):
-            print(colored(f"\nSource text ({source.strip()}):", "blue"))
-            for input_doc in response["input_documents"]:
-                metadata = input_doc.get("metadata", {})
-                src = metadata["source"]
-                if source.strip() == src:
-                    print(input_doc.get("page_content", "Source text missing"))
+        for source in sources:
+            print(source.get("page_content", "Source text missing"))
 
 
 if __name__ == "__main__":
