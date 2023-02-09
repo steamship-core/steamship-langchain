@@ -27,8 +27,8 @@ class QuestionAnsweringPackage(PackageService):
                     "plugin_handle": "openai-embedder",
                     "fetch_if_exists": True,
                     "config": {
-                        "model": "text-similarity-curie-001",
-                        "dimensionality": 4096,
+                        "model": "text-embedding-ada-002",
+                        "dimensionality": 1536,
                     },
                 }
             },
