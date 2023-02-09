@@ -1,4 +1,4 @@
-"""Demonstration of calling OpenAI's LLM without Steamship"""
+"""Demonstration of calling OpenAI's LLM with Steamship"""
 from steamship import Steamship
 
 from steamship_langchain import OpenAI
@@ -18,7 +18,3 @@ print(llm_result.generations[0])
 print(llm_result.llm_output)
 
 print(llm.get_num_tokens("what a joke"))
-
-# [Generation(text='\n\nWhy did the chicken cross the road?\n\nTo get to the other side!', generation_info={'finish_reason': 'stop', 'logprobs': None}), Generation(text='\n\nWhy did the chicken cross the road?\n\nTo get to the other side.', generation_info={'finish_reason': 'stop', 'logprobs': None})]
-# {'token_usage': {'total_tokens': 3673, 'completion_tokens': 3553, 'prompt_tokens': 120}}
-# 3

@@ -10,7 +10,7 @@ from pydantic import root_validator
 from steamship import Block, File, Steamship, SteamshipError
 from steamship.data import TagKind, TagValueKey
 
-PLUGIN_HANDLE: str = "openai"
+PLUGIN_HANDLE: str = "gpt-3"
 ARGUMENT_WHITELIST = {
     "client",
     "model_name",
@@ -61,13 +61,13 @@ class OpenAI(BaseOpenAI):
     def _default_params(self) -> Dict[str, Any]:
         """Get the default parameters for calling Steamship's OpenAI Plugin."""
         normal_params = {
-            "model_name": self.model_name,
+            "model": self.model_name,
             "temperature": self.temperature,
-            "max_tokens": self.max_tokens,
+            "max_words": self.max_tokens,
             "top_p": self.top_p,
             "frequency_penalty": self.frequency_penalty,
             "presence_penalty": self.presence_penalty,
-            "n": self.n,
+            "n_completions": self.n,
             "best_of": self.best_of,
             "request_timeout": self.request_timeout,
             "max_retries": self.max_retries,
