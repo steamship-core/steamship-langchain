@@ -106,7 +106,6 @@ def test_openai_stop_valid(client: Steamship) -> None:
     # Because it stops on new lines, shouldn't return anything
     assert first_output == second_output
 
-
 @pytest.mark.usefixtures("client")
 def test_saving_loading_llm(client: Steamship, tmp_path: Path) -> None:
     """Test saving/loading an OpenAPI LLM."""

@@ -43,8 +43,6 @@ class SteamshipVectorStore(VectorStore):
                     "fetch_if_exists": True,
                     "config": {
                         "model": embedding.document_model_name,
-                        "kind_filter": "",
-                        "name_filter": ""
                     },
                 }
             },
