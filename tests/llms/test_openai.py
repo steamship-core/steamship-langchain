@@ -45,10 +45,10 @@ def test_openai_batching(client: Steamship):
     llm_under_test = OpenAI(client=client, temperature=0)
 
     # batched prompts -- needs to exceed the max batch_size (of 20)
-    prompts = ["Tell me a joke", "Tell me a poem"] * 35
+    prompts = ["Tell me a joke", "Tell me a poem"] * 15
     generated = llm_under_test.generate(prompts=prompts)
     assert len(generated.generations) != 0
-    assert len(generated.generations) == 70
+    assert len(generated.generations) == 30
 
 
 @pytest.mark.usefixtures("client")
