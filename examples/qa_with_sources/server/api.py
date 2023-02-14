@@ -1,7 +1,8 @@
 from typing import Any, Dict, List
 
 import langchain
-from langchain import VectorDBQAWithSourcesChain
+from langchain import VectorDBQAWithSourcesChain, ConversationChain
+from langchain.chains import ChatVectorDBChain
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
 from steamship import File
@@ -11,6 +12,13 @@ from steamship_langchain.cache import SteamshipCache
 from steamship_langchain.llms import OpenAI
 from steamship_langchain.vectorstores import SteamshipVectorStore
 
+from src.steamship_langchain.memory import ConversationBufferMemory
+
+ChatVectorDBChain
+
+ConversationBufferMemory
+
+ConversationChain
 
 class QuestionAnsweringPackage(PackageService):
     def __init__(self, **kwargs):
