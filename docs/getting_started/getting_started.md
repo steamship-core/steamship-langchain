@@ -69,8 +69,8 @@ from steamship.invocable import PackageService, post
 
 class JokeWizard(PackageService):
 
-    @post("index_file")
-    def index_file(self) -> str:
+    @post("generate")
+    def generate(self) -> str:
         llm = OpenAI(
             client=self.client,
             model_name="text-ada-001", 
@@ -85,5 +85,5 @@ class JokeWizard(PackageService):
 That's it, now you can deploy your package:
 
 ```bash
-ship deploy
+ship it
 ```

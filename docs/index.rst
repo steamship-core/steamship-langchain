@@ -90,10 +90,3 @@ Something's missing? We'd love to hear from you. Please reach out to: hello@stea
    :hidden:
 
    support/coverage.md
-
-
-Feedback and Support
-----------------------
-Have any feedback on this package? Or on Steamship in general?
-
-We'd love to hear from you. Please reach out to: hello@steamship.com, or join us on our Discord.
