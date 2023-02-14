@@ -4,6 +4,7 @@ import logging
 from collections import defaultdict
 from typing import Any, Dict, Generator, List, Mapping, Optional
 
+import tiktoken
 from langchain.llms.base import Generation, LLMResult
 from langchain.llms.openai import BaseOpenAI
 from pydantic import root_validator
@@ -126,6 +127,13 @@ class OpenAI(BaseOpenAI):
         return LLMResult(
             generations=generations, llm_output={"token_usage": dict(total_token_usage)}
         )
+
+    def get_num_tokens(self, text: str) -> int:
+        """Calculate num tokens with tiktoken package."""
+        encoder = "p50k_base"
+        enc = tiktoken.get_encoding(encoder)
+        tokenized_text = enc.encode(text)
+        return len(tokenized_text)
 
     def stream(self, prompt: str, stop: Optional[List[str]] = None) -> Generator:
         raise NotImplementedError("Support for streaming is not supported yet.")
