@@ -1,7 +1,7 @@
 {
 	"type": "package",
-	"handle": "test-qa-with-sources-enias",
-	"version": "0.0.11",
+	"handle": "test-qa-with-sources",
+	"version": "0.0.2",
 	"description": null,
 	"author": "doug",
 	"entrypoint": "Unused",

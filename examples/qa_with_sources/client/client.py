@@ -4,7 +4,7 @@ from steamship import Block, File, RuntimeEnvironments, Steamship, check_environ
 from termcolor import colored
 
 STATE_OF_THE_UNION_PATH = (
-    Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
+        Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
 )
 
 
@@ -12,9 +12,9 @@ def main():
     # This helper provides runtime API key prompting, etc.
     check_environment(RuntimeEnvironments.LOCALHOST)
 
-    with Steamship().temporary_workspace(profile="test") as client:
+    with Steamship.temporary_workspace() as client:
         # This handle MUST match the handle that you deployed with. Here we use the default option.
-        api = client.use(package_handle="test-qa-with-sources-enias")
+        api = client.use(package_handle="test-qa-with-sources-enias2", instance_handle="test4")
 
         # Embed the State of the Union address
         with STATE_OF_THE_UNION_PATH.open() as f:
@@ -35,8 +35,6 @@ def main():
         print(colored("\nQuery: ", "blue"), f"{query}")
 
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
-
-        sys_info = api.invoke("/get_sys_info")
 
         response = api.invoke("/qa_with_sources", query=query)  # question, answer, sources
         print(colored("Answer: ", "blue"), f"{response['result'].strip()}")
