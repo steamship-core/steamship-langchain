@@ -85,5 +85,5 @@ class JokeWizard(PackageService):
 That's it, now you can deploy your package:
 
 ```bash
-ship it
+ship deploy
 ```
