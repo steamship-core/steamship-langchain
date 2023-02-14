@@ -1,3 +1,3 @@
 # Prompts
 
-Steamship has native support for PromptTemplates including loading prompts from LangChainHub and few-short prompting.
+Steamship has native support for PromptTemplates including loading prompts from LangChainHub and few-shot prompting.

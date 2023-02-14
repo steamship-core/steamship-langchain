@@ -4,7 +4,7 @@ from steamship import Block, File, RuntimeEnvironments, Steamship, check_environ
 from termcolor import colored
 
 STATE_OF_THE_UNION_PATH = (
-        Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
+    Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
 )
 
 
@@ -14,7 +14,7 @@ def main():
 
     with Steamship.temporary_workspace() as client:
         # This handle MUST match the handle that you deployed with. Here we use the default option.
-        api = client.use(package_handle="test-qa-with-sources-enias2", instance_handle="test4")
+        api = client.use(package_handle="test-qa-with-sources")
 
         # Embed the State of the Union address
         with STATE_OF_THE_UNION_PATH.open() as f:
