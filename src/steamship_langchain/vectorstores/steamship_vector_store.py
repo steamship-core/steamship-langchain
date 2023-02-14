@@ -22,7 +22,7 @@ class SteamshipVectorStore(VectorStore):
         self,
         client: Steamship,
         embedding: str,
-        index_name: Optional[str] = None,
+        index_name: str,
     ):
         """Initialize with necessary components."""
 
@@ -36,11 +36,11 @@ class SteamshipVectorStore(VectorStore):
                 "embedder": {
                     "plugin_handle": "openai-embedder",
                     "instance_handle": self.index_name,
-                    "fetch_if_exists": False,
+                    "fetch_if_exists": True,
                     "config": {"model": embedding, "dimensionality": 1536},
                 }
             },
-            fetch_if_exists=False,
+            fetch_if_exists=True,
         )
 
     def add_texts(self, texts: Iterable[str], metadatas: Optional[List[dict]] = None) -> None:
@@ -79,6 +79,7 @@ class SteamshipVectorStore(VectorStore):
         client: Steamship,
         texts: List[str],
         embedding: str,
+        index_name: str,
         metadatas: Optional[List[dict]] = None,
         **kwargs: Any
     ) -> VectorStore:
@@ -100,7 +101,6 @@ class SteamshipVectorStore(VectorStore):
                 svs = SteamshipVectorStore.from_texts(texts, embeddings)
         """
 
-        index_name = uuid.uuid4().hex
         svs = cls(client=client, index_name=index_name, embedding=embedding)
         svs.add_texts(texts=texts, metadatas=metadatas)
         return svs

@@ -1,1 +1,1 @@
-steamship-langchain
+steamship-langchain==0.0.10rc0

@@ -11,11 +11,10 @@ STATE_OF_THE_UNION_PATH = (
 def main():
     # This helper provides runtime API key prompting, etc.
     check_environment(RuntimeEnvironments.LOCALHOST)
-    exit()
 
     with Steamship.temporary_workspace() as client:
         # This handle MUST match the handle that you deployed with. Here we use the default option.
-        api = client.use(package_handle="test-qa-with-sources")
+        api = client.use(package_handle="test-qa-with-sources-enias")
 
         # Embed the State of the Union address
         with STATE_OF_THE_UNION_PATH.open() as f:
@@ -37,7 +36,10 @@ def main():
 
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
 
-        response = api.invoke("/qa_with_sources", query=query)
+        response = api.invoke("/search_embeddings", query=query, k=2)
+        print(response)
+
+        response = api.invoke("/qa_with_sources", query=query)  # question, answer, sources
         print(colored("Answer: ", "blue"), f"{response['result'].strip()}")
 
         # Print sources (with text)

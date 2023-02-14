@@ -20,7 +20,9 @@ class QuestionAnsweringPackage(PackageService):
         # set up LLM
         self.llm = OpenAI(client=self.client, temperature=0, cache=True, max_words=250)
         # create a persistent embedding store
-        self.index = SteamshipVectorStore(client=self.client, embedding="text-embedding-ada-002")
+        self.index = SteamshipVectorStore(
+            client=self.client, index_name="qa-demo", embedding="text-embedding-ada-002"
+        )
 
     @post("index_file")
     def index_file(self, file_handle: str) -> bool:
