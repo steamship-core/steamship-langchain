@@ -12,7 +12,7 @@ def main():
     # This helper provides runtime API key prompting, etc.
     check_environment(RuntimeEnvironments.LOCALHOST)
 
-    with Steamship.temporary_workspace() as client:
+    with Steamship().temporary_workspace(profile="test") as client:
         # This handle MUST match the handle that you deployed with. Here we use the default option.
         api = client.use(package_handle="test-qa-with-sources-enias")
 
