@@ -36,8 +36,7 @@ def main():
 
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
 
-        response = api.invoke("/search_embeddings", query=query, k=2)
-        print(response)
+        sys_info = api.invoke("/get_sys_info")
 
         response = api.invoke("/qa_with_sources", query=query)  # question, answer, sources
         print(colored("Answer: ", "blue"), f"{response['result'].strip()}")

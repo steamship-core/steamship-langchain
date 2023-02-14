@@ -27,6 +27,10 @@ index.add_texts(texts=texts, metadatas=metadatas)
 
 # new call
 
+import sys
+
+d = sys.version_info[1]
+
 index = SteamshipVectorStore(
     client=client, index_name="qa-demo", embedding="text-embedding-ada-002"
 )

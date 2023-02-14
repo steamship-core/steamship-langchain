@@ -1,3 +1,4 @@
+import sys
 from typing import Any, Dict, List
 
 import langchain
@@ -39,8 +40,13 @@ class QuestionAnsweringPackage(PackageService):
         """Return the `k` closest items in the embedding index."""
         return self.index.similarity_search(query, k=k)
 
+    @post("get_sys_info")
+    def get_sys_info(self):
+        return sys.version_info[1]
+
     @post("/qa_with_sources")
     def qa_with_sources(self, query: str) -> Dict[str, Any]:
+        print(sys.version)
         chain = VectorDBQAWithSourcesChain.from_chain_type(
             OpenAI(client=self.client, temperature=0),
             chain_type="map_reduce",
