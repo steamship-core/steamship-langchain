@@ -153,7 +153,7 @@ class OpenAI(BaseOpenAI):
         blocks = [Block(text=prompt) for prompt in prompts]
 
         generations = []
-        token_usage = None
+        token_usage = {}
         try:
             prompt_file = File.create(client=self.client, blocks=blocks)
             task = llm_plugin.tag(doc=prompt_file)

@@ -1,4 +1,5 @@
 """Test ElasticSearch functionality."""
+
 import pytest
 from langchain.docstore.document import Document
 from steamship import Steamship

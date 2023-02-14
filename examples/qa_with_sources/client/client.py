@@ -1,17 +1,24 @@
+from pathlib import Path
+
 from steamship import Block, File, RuntimeEnvironments, Steamship, check_environment
 from termcolor import colored
+
+STATE_OF_THE_UNION_PATH = (
+    Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
+)
 
 
 def main():
     # This helper provides runtime API key prompting, etc.
     check_environment(RuntimeEnvironments.LOCALHOST)
+    exit()
 
     with Steamship.temporary_workspace() as client:
         # This handle MUST match the handle that you deployed with. Here we use the default option.
         api = client.use(package_handle="test-qa-with-sources")
 
         # Embed the State of the Union address
-        with open("state_of_the_union.txt") as f:
+        with STATE_OF_THE_UNION_PATH.open() as f:
             print(
                 colored("Saving the state of the union file to Steamship workspace...", "blue"),
                 end="",

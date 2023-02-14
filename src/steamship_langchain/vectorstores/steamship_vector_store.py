@@ -34,13 +34,10 @@ class SteamshipVectorStore(VectorStore):
             instance_handle=self.index_name,
             config={
                 "embedder": {
-                    "plugin_handle": "openai-embedder-test",
+                    "plugin_handle": "openai-embedder",
                     "instance_handle": self.index_name,
-                    "fetch_if_exists": True,
-                    "config": {
-                        "model": embedding,
-                        "dimensionality": 1536
-                    },
+                    "fetch_if_exists": False,
+                    "config": {"model": embedding, "dimensionality": 1536},
                 }
             },
             fetch_if_exists=False,
