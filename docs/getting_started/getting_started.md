@@ -15,7 +15,7 @@ pip install steamship-langchain
 
 Steamship's backend provides access to external model providers, data stores, and apis without the need to install additional libraries or sign up for new API Keys. 
 
-To get access, you'll need to store your (Steamship API key)[https://steamship.com/account/api.] as an environment variable:
+To get access, you'll need to store your (Steamship API key)[https://steamship.com/account/api] as an environment variable:
 
 ```bash
 export STEAMSHIP_API_KEY="..."
@@ -69,8 +69,8 @@ from steamship.invocable import PackageService, post
 
 class JokeWizard(PackageService):
 
-    @post("index_file")
-    def index_file(self) -> str:
+    @post("generate")
+    def generate(self) -> str:
         llm = OpenAI(
             client=self.client,
             model_name="text-ada-001", 

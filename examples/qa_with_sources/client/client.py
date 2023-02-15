@@ -1,5 +1,11 @@
+from pathlib import Path
+
 from steamship import Block, File, RuntimeEnvironments, Steamship, check_environment
 from termcolor import colored
+
+STATE_OF_THE_UNION_PATH = (
+    Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
+)
 
 
 def main():
@@ -11,7 +17,7 @@ def main():
         api = client.use(package_handle="test-qa-with-sources")
 
         # Embed the State of the Union address
-        with open("state_of_the_union.txt") as f:
+        with STATE_OF_THE_UNION_PATH.open() as f:
             print(
                 colored("Saving the state of the union file to Steamship workspace...", "blue"),
                 end="",
@@ -30,7 +36,7 @@ def main():
 
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
 
-        response = api.invoke("/qa_with_sources", query=query)
+        response = api.invoke("/qa_with_sources", query=query)  # question, answer, sources
         print(colored("Answer: ", "blue"), f"{response['result'].strip()}")
 
         # Print sources (with text)

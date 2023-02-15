@@ -41,10 +41,10 @@ Initial support is offered for the following (with more to follow soon):
     - Windowed Memory (`steamship_langchain.memory.ConversationBufferWindowMemory`)
 
 ## 📖 Documentation
-Please see here for full documentation on:
+Please see [here](https://docs.langchain.steamship.com/) for full documentation on:
 
-Getting started (installation, setting up the environment, simple examples)
-How-To examples (demos, integrations, helper functions)
+- Getting started (installation, setting up the environment, simple examples)
+- How-To examples (demos, integrations, helper functions)
 
 ## Example Use Cases
 
