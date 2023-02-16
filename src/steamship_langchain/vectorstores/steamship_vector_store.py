@@ -4,7 +4,37 @@ from typing import Any, Iterable, List, Optional
 
 from langchain.docstore.document import Document
 from langchain.vectorstores import VectorStore
-from steamship import Steamship, Tag
+from steamship import Steamship, SteamshipError, Tag
+
+FAMILY_TO_DIMENSIONALITY = {"ada": 1024, "babbage": 2048, "curie": 4096, "davinci": 12288}
+
+MODEL_TO_DIMENSIONALITY = {
+    "text-embedding-ada-002": 1536,
+    **{
+        f"text-similarity-{model}-001": dimensionality
+        for model, dimensionality in FAMILY_TO_DIMENSIONALITY.items()
+    },
+    **{
+        f"text-search-{model}-{type}-001": dimensionality
+        for type in ["doc", "query"]
+        for model, dimensionality in FAMILY_TO_DIMENSIONALITY.items()
+    },
+    **{
+        f"code-search-{model}-{type}-001": FAMILY_TO_DIMENSIONALITY[model]
+        for type in ["code", "text"]
+        for model in ["babbage", "ada"]
+    },
+}
+
+
+def get_dimensionality(model: str) -> int:
+    if model not in MODEL_TO_DIMENSIONALITY:
+        raise SteamshipError(
+            message=f"Model {model} is not supported by this plugin.. "
+            + f"Valid models for this task are: {MODEL_TO_DIMENSIONALITY.keys()}."
+        )
+
+    return MODEL_TO_DIMENSIONALITY[model]
 
 
 class SteamshipVectorStore(VectorStore):
@@ -34,13 +64,13 @@ class SteamshipVectorStore(VectorStore):
             instance_handle=self.index_name,
             config={
                 "embedder": {
-                    "plugin_handle": "openai-embedder",
+                    "plugin_handle": "openai-embedder-test",
                     "instance_handle": self.index_name,
-                    "fetch_if_exists": True,
-                    "config": {"model": embedding, "dimensionality": 1536},
+                    "fetch_if_exists": False,
+                    "config": {"model": embedding, "dimensionality": get_dimensionality(embedding)},
                 }
             },
-            fetch_if_exists=True,
+            fetch_if_exists=False,
         )
 
     def add_texts(self, texts: Iterable[str], metadatas: Optional[List[dict]] = None) -> None:
@@ -81,7 +111,7 @@ class SteamshipVectorStore(VectorStore):
         embedding: str,
         index_name: str,
         metadatas: Optional[List[dict]] = None,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> VectorStore:
         """Construct SteamshipVectorStore wrapper from raw documents.
 
