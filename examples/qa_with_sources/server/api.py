@@ -1,15 +1,15 @@
 from typing import Any, Dict, List
 
 import langchain
-from langchain.chains.qa_with_sources import load_qa_with_sources_chain
+from langchain import VectorDBQAWithSourcesChain
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
-from steamship import File, Tag
-from steamship.data.plugin.index_plugin_instance import SearchResult
+from steamship import File
 from steamship.invocable import PackageService, post
 
 from steamship_langchain.cache import SteamshipCache
 from steamship_langchain.llms import OpenAI
+from steamship_langchain.vectorstores import SteamshipVectorStore
 
 
 class QuestionAnsweringPackage(PackageService):
@@ -20,55 +20,31 @@ class QuestionAnsweringPackage(PackageService):
         # set up LLM
         self.llm = OpenAI(client=self.client, temperature=0, cache=True, max_words=250)
         # create a persistent embedding store
-        self.index = self.client.use_plugin(
-            "embedding-index",
-            config={
-                "embedder": {
-                    "plugin_handle": "openai-embedder",
-                    "fetch_if_exists": True,
-                    "config": {
-                        "model": "text-embedding-ada-002",
-                        "dimensionality": 1536,
-                    },
-                }
-            },
-            fetch_if_exists=True,
+        self.index = SteamshipVectorStore(
+            client=self.client, index_name="qa-demo", embedding="text-embedding-ada-002"
         )
 
     @post("index_file")
     def index_file(self, file_handle: str) -> bool:
         text_splitter = CharacterTextSplitter(chunk_size=250, chunk_overlap=0)
-        texts = []
         file = File.get(self.client, handle=file_handle)
-        for block in file.blocks:
-            texts.extend(text_splitter.split_text(block.text))
+        texts = [text for block in file.blocks for text in text_splitter.split_text(block.text)]
+        metadatas = [{"source": f"{file.handle}-offset-{i * 250}"} for i, text in enumerate(texts)]
 
-        # give an approximate source location based on chunk size
-        items = [
-            Tag(client=self.client, text=t, value={"source": f"{file.handle}-offset-{i * 250}"})
-            for i, t in enumerate(texts)
-        ]
-
-        self.index.insert(items)
+        self.index.add_texts(texts=texts, metadatas=metadatas)
         return True
 
     @post("search_embeddings")
-    def search_embeddings(self, query: str, k: int) -> List[SearchResult]:
+    def search_embeddings(self, query: str, k: int) -> List[Document]:
         """Return the `k` closest items in the embedding index."""
-        search_results = self.index.search(query, k=k)
-        search_results.wait()
-        items = search_results.output.items
-        return items
+        return self.index.similarity_search(query, k=k)
 
     @post("/qa_with_sources")
     def qa_with_sources(self, query: str) -> Dict[str, Any]:
-        chain = load_qa_with_sources_chain(self.llm, chain_type="map_reduce", verbose=False)
-        search_results = self.search_embeddings(query, k=4)
-        docs = [
-            Document(
-                page_content=result.tag.text,
-                metadata={"source": result.tag.value.get("source", "unknown")},
-            )
-            for result in search_results
-        ]
-        return chain({"input_documents": docs, "question": query})
+        chain = VectorDBQAWithSourcesChain.from_chain_type(
+            OpenAI(client=self.client, temperature=0),
+            chain_type="map_reduce",
+            vectorstore=self.index,
+        )
+
+        return chain({"question": query}, return_only_outputs=False)

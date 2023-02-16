@@ -37,6 +37,8 @@ Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for
 
 - `Chains <./adapters/chains.html>`_
 
+- `VectorStores <./adapters/vectorstores.html>`_
+
 - `Agents <./adapters/agents.html>`_
 
 - `Memory <./adapters/memory.html>`_
@@ -49,10 +51,11 @@ Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for
    :hidden:
 
    ./adapters/prompts.md
-   ./adapters/llms.md
+   ./adapters/llms.rst
    ./adapters/chains.md
    ./adapters/agents.md
    ./adapters/memory.md
+   ./adapters/vectorstores.rst
 
 Use Cases
 ----------

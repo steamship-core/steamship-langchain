@@ -251,46 +251,21 @@ from steamship_langchain.llms import OpenAI
 
 def __init__(self, **kwargs):
     super().__init__(**kwargs)
-    # set up LLM cache
     langchain.llm_cache = SteamshipCache(self.client)
-    # set up LLM
-    self.llm = OpenAI(client=self.client,
-                            temperature=0,
-                            cache=True,
-                            max_words=250)
-    # create a persistent embedding store
-    self.index = self.client.use_plugin(
-        "embedding-index",
-        config={
-            "embedder": {
-                "plugin_handle": "openai-embedder",
-                "fetch_if_exists": True,
-                "config": {
-                    "model": "text-embedding-ada-002",
-                    "dimensionality": 1536,
-                }
-            }
-        },
-        fetch_if_exists=True,
+    self.llm = OpenAI(client=self.client, temperature=0, cache=True, max_words=250)
+    # create a persistent embedding store  
+    self.index = SteamshipVectorStore(
+        client=self.client, index_name="qa-demo", embedding="text-embedding-ada-002"
     )
 
 @post("index_file")
 def index_file(self, file_handle: str) -> bool:
     text_splitter = CharacterTextSplitter(chunk_size=250, chunk_overlap=0)
-    texts = []
     file = File.get(self.client, handle=file_handle)
-    for block in file.blocks:
-        texts.extend(text_splitter.split_text(block.text))
+    texts = [text for block in file.blocks for text in text_splitter.split_text(block.text)]
+    metadatas = [{"source": f"{file.handle}-offset-{i * 250}"} for i, text in enumerate(texts)]
 
-    # give an approximate source location based on chunk size
-    items = [
-        Tag(client=self.client,
-            text=t,
-            value={"source": f"{file.handle}-offset-{i * 250}"})
-        for i, t in enumerate(texts)
-    ]
-
-    self.index.insert(items)
+    self.index.add_texts(texts=texts, metadatas=metadatas)
     return True
 
 @post("search_embeddings")
@@ -301,18 +276,16 @@ def search_embeddings(self, query: str, k: int) -> List[SearchResult]:
     items = search_results.output.items
     return items
 
+
 @post("/qa_with_sources")
 def qa_with_sources(self, query: str) -> Dict[str, Any]:
-    chain = load_qa_with_sources_chain(self.llm,
-                                       chain_type="map_reduce",
-                                       verbose=False)
-    search_results = self.search_embeddings(query, k=4)
-    docs = [
-        Document(page_content=result.tag.text,
-                 metadata={"source": result.tag.value.get("source", "unknown")})
-        for result in search_results
-    ]
-    return chain({"input_documents": docs, "question": query})
+    chain = VectorDBQAWithSourcesChain.from_chain_type(
+        OpenAI(client=self.client, temperature=0),
+        chain_type="map_reduce",
+        vectorstore=self.index,
+    )
+
+    return chain({"question": query}, return_only_outputs=False)
 ```
 
 #### Client Snippet
@@ -322,7 +295,7 @@ with Steamship.temporary_workspace() as client:
     api = client.use("my-langchain-app")
     
     # Upload the State of the Union address
-    with open("state-of-the-union-2022.txt") as f:
+    with open("state_of_the_union.txt") as f:
         sotu_file = File.create(client, blocks=[Block(text=f.read())])
 
     # Embed
@@ -331,7 +304,7 @@ with Steamship.temporary_workspace() as client:
     # Issue Query
     query = "What did the president say about Justice Breyer?"
     response = api.invoke("/qa_with_sources", query=query)
-    print(f"Answer: {response['output_text'].strip()}")
+    print(f"Answer: {response['result'].strip()}")
 ```
 
 ## API Keys

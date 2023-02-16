@@ -6,18 +6,23 @@ To get the most out of Steamship's cloud platform you'll be using adapters. Stea
 ## Modules 
 
 * LLMs
-  * ✅ LLM Models
-  * ✅ LLM Caching 
-  * ❌ LLM Serialisation
-  * ✅ Token Usage Tracking 
-* Prompt Templates ✅
+  * ✅ LLM Models using `steamship_langchain.llms.OpenAI`
+  * ✅ LLM Caching using `steamship_langchain.cache.SteamshipCache`
+  * ❌ LLM Serialisation 
+  * ✅ Token Usage Tracking supported by `steamship_langchain.llms.OpenAI`
+* Prompt ✅
+  * ✅ Prompt Templates
+  * ✅ Few-shot prompting 
+  * ✅ Prompt loading `LangChainHub`
+  * ✅ Selecting prompt examples using `ExampleSelector`
 * Chains ✅
 * Agents 
-  * ✅ SERPAPI
+  * ✅ SERPAPI using `steamship_langchain.tools.SteamshipSERP`
 * Memory
-  * ✅ Complete Memory 
-  * ✅ Windowed Memory 
-
+  * ✅ Complete Memory using `steamship_langchain.memory.ConversationBufferMemory`
+  * ✅ Windowed Memory using ``steamship_langchain.memory.ConversationBufferWindowMemory``
+* ⚒️ Utils 
+  * ✅ VectorStores using `steamship_langchain.vectorstore.SteamshipVectorStore`
 
 ## Use Cases
 

@@ -1,5 +1,11 @@
+from pathlib import Path
+
 from steamship import Block, File, RuntimeEnvironments, Steamship, check_environment
 from termcolor import colored
+
+STATE_OF_THE_UNION_PATH = (
+    Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
+)
 
 
 def main():
@@ -11,7 +17,7 @@ def main():
         api = client.use(package_handle="test-qa-with-sources")
 
         # Embed the State of the Union address
-        with open("state-of-the-union-2022.txt") as f:
+        with STATE_OF_THE_UNION_PATH.open() as f:
             print(
                 colored("Saving the state of the union file to Steamship workspace...", "blue"),
                 end="",
@@ -30,26 +36,18 @@ def main():
 
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
 
-        response = api.invoke("/qa_with_sources", query=query)
-        print(colored("Answer: ", "blue"), f"{response['output_text'].strip()}")
+        response = api.invoke("/qa_with_sources", query=query)  # question, answer, sources
+        print(colored("Answer: ", "blue"), f"{response['result'].strip()}")
 
         # Print sources (with text)
-        last_line = response["output_text"].splitlines()[-1:][0]
+        sources = response["source_documents"]
 
-        if "SOURCES: " not in last_line:
-            print(last_line)
+        if not sources:
             print(colored("No sources provided in response.", "red"))
             return
 
-        sources_list = last_line[len("SOURCES: ") :]
-
-        for source in sources_list.split(","):
-            print(colored(f"\nSource text ({source.strip()}):", "blue"))
-            for input_doc in response["input_documents"]:
-                metadata = input_doc.get("metadata", {})
-                src = metadata["source"]
-                if source.strip() == src:
-                    print(input_doc.get("page_content", "Source text missing"))
+        for source in sources:
+            print(source.get("page_content", "Source text missing"))
 
 
 if __name__ == "__main__":
