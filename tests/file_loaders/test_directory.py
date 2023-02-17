@@ -11,7 +11,7 @@ from tests import TEST_ASSETS_PATH
 def test_directory_loader(client: Steamship):
     path = TEST_ASSETS_PATH
     loader_under_test = DirectoryLoader(client=client, file_loader=TextFileLoader(client=client))
-    files = loader_under_test.load(str(path))
+    files = loader_under_test.load(str(path), glob="*.*")
 
     assert len(files) == 2
     for file in files:

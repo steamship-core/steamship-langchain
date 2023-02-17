@@ -35,6 +35,7 @@ class DirectoryLoader(BaseModel):
             if self.skip_images and (f.name.endswith(".png") or f.name.endswith(".jpg")):
                 continue
             if f.is_file():
+                print("loading file...", f)
                 file_list = self.file_loader.load(str(f.absolute()), metadata)
                 files.extend(file_list)
         return files
