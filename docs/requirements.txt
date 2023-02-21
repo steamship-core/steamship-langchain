@@ -1,5 +1,4 @@
 autodoc_pydantic==1.8.0
-langchain==0.0.79
 myst_parser
 nbsphinx==0.8.9
 sphinx==4.5.0
@@ -8,6 +7,5 @@ sphinx_book_theme
 sphinx_rtd_theme==1.0.0
 sphinx-typlog-theme==0.8.0
 sphinx-panels
-steamship-langchain==0.0.10
 toml
 myst_nb
