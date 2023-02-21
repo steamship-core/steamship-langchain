@@ -16,22 +16,22 @@ def _get_provenance_tag(file: File) -> Optional[str]:
 
 
 class SteamshipLoader(BaseLoader, BaseModel):
-    """Loads Steamship Files into LangChain Documents.
-
-    :param client: provides workspace-scoping for File retrieval
-    :param query: allows free-form query-based retrieval of Files (may NOT be used with `files`)
-    :param files: a list of Files to import (may NOT be used with `query`)
-    :param join_str: when `collapse_blocks` is True, this determines how the block texts will be joined
-    :param collapse_blocks: determines if all blocks from a File will be merged into a single Document
-
-    NOTE: If neither files or query are specified, nothing will be imported.
-    """
+    """Loads Steamship Files into LangChain Documents."""
 
     client: Steamship
+    "Provides Steamship workspace-scoping for File retrieval"
+
     query: Optional[str] = None
+    "Allows free-form query-based retrieval of Files (MAY NOT be used with `files`)." "NOTE: If neither files or query are specified, nothing will be imported."
+
     files: Optional[List[File]] = None
+    "A list of Files to import (MAY NOT be used with `query`)" "NOTE: If neither files or query are specified, nothing will be imported."
+
     join_str: str = "\n\n"
+    "When `collapse_blocks` is True, this determines how the block texts will be joined."
+
     collapse_blocks: bool = True
+    "Determines if all blocks from a File will be merged into a single Document"
 
     @validator("files", always=True)
     def mutually_exclusive(cls, v, values):  # noqa: N805

@@ -15,12 +15,22 @@ from steamship_langchain.file_loaders.text import TextFileLoader
 class GitHubRepositoryLoader(BaseModel):
     """Load a GitHub repository's files into a Steamship workspace.
 
-    Creates new Files by uploading the content of repo files. File tags for identifying the source files and the time of import are automatically added, as well as for any custom metadata that is provided. This enables query-based retrieval for downstream processing.
+    Creates new Files by uploading the content of repo files. File tags for identifying the source files and the
+    time of import are automatically added, as well as for any custom metadata that is provided.
+    This enables query-based retrieval for downstream processing.
+
+    NOTE: Requires install of GitPython via `pip install GitPython`
     """
 
     client: Steamship
+    "Provides Steamship workspace-scoping for File loading."
+
     repository_path: str
+    "The Github repo path (part after https://github.com). Typically <org-name>/<repo-name>. " "Example: steamship-core/steamship-langchain"
+
     branch_or_tag: str
+    "The ref to checkout and load." "Example: v2.0.1"
+
     glob: str = Field(
         default="**/*",
         description="Unix-style pathname expansion pattern. Use this to select which "

@@ -20,6 +20,8 @@ class YouTubeFileLoader(BaseModel):
     """
 
     client: Steamship
+    "Provides Steamship workspace-scoping for File loading."
+
     _yt_importer: PluginInstance = None
 
     class Config:

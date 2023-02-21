@@ -60,6 +60,7 @@ class BaseFileLoader(ABC, BaseModel):
     """Base file loader class."""
 
     client: Steamship
+    "Provides Steamship workspace-scoping for Files"
 
     @abstractmethod
     def load(self, path: str, metadata: Optional[Dict[str, str]] = None) -> List[File]:

@@ -1,4 +1,4 @@
-"""Provides a NAIVE splitter for Python code files.
+"""Provides a NAIVE splitter for Python code files using the AST.
 
 NOTE: This is meant to provide only a _basic_ chunking for Python source code (for use in embeddings).
 It does NOT handle any fine-grained semantic chunking beyond Class + Function chunks. There is no smaller
@@ -7,20 +7,27 @@ split the results from using this class.
 """
 
 import ast
-from typing import List, Union
+from typing import List, Optional, Union
 
 from langchain.text_splitter import TextSplitter
 
 
-def _parent_lines(python_class, code_lines: List[str]) -> str:
+def _parent_class_lines(python_class, code_lines: List[str]) -> str:
     """Return a string with parent context.
 
     This is used to ensure individual segments (like nested classes and functions)
     are "annotated" with their parent scope.
     """
-    line = code_lines[python_class.first_line - 1]
+    first_line = python_class.first_line
+    if first_line > 0:
+        first_line -= 1
+    if first_line > len(code_lines):
+        return ""
+    line = code_lines[
+        first_line
+    ]  # for now, assume the full class declaration lives on a single line
     if python_class.parent:
-        return "\n".join([_parent_lines(python_class.parent, code_lines), line])
+        return "\n".join([_parent_class_lines(python_class.parent, code_lines), line])
     return line
 
 
@@ -28,6 +35,12 @@ class PythonSegment:
     """Represents a chunk of Python code in the context of a code file."""
 
     def __init__(self, name: str, first_line: int = -1, last_line: int = -1):
+        """Initialize the segment.
+
+        :param name: the name of the segment
+        :param first_line: the index of the first line of a segment in the overall code file
+        :param last_line: the index of the last line of a segment in the overall code file
+        """
         self._parent = None
         self._name = name
         self._first_line = first_line
@@ -53,7 +66,7 @@ class PythonSegment:
         # handle switch from 1- to 0-indexed
         code = "\n".join(code_lines[self.first_line - 1 : self.last_line])
         if self.parent:
-            return ["\n".join([_parent_lines(self.parent, code_lines), code])]
+            return ["\n".join([_parent_class_lines(self.parent, code_lines), code])]
         return [code]
 
 
@@ -61,6 +74,13 @@ class ClassDef(PythonSegment):
     """Represents a segment of code for python class definition."""
 
     def __init__(self, name: str, first_line: int = -1, last_line: int = -1, docstring=None):
+        """Initialize a class segment.
+
+        :param name: the name of the class segment
+        :param first_line: the index of the first line of a class segment in the overall code file
+        :param last_line: the index of the last line of a class segment in the overall code file
+        :param docstring: the associated docstring for the class.
+        """
         super().__init__(name=name, first_line=first_line, last_line=last_line)
         self._parent = None
         self._owned_segments = [[first_line, last_line]]
@@ -100,9 +120,9 @@ class ClassDef(PythonSegment):
                 continue
             # always provide context
             if seg[0] != self.first_line:
-                segs.append("\n".join([_parent_lines(self, code_lines), code]))
+                segs.append("\n".join([_parent_class_lines(self, code_lines), code]))
             elif self.parent:
-                segs.append("\n".join([_parent_lines(self._parent, code_lines), code]))
+                segs.append("\n".join([_parent_class_lines(self._parent, code_lines), code]))
             else:
                 segs.append(code)
         return segs
@@ -121,7 +141,11 @@ class ClassAndFunctionVisitor(ast.NodeVisitor):
     """Visit Nodes in a Python AST and record important code segments."""
 
     _segments: List[Union[ClassDef, FuncDef]] = []
-    _current_context: ClassDef = None
+    _current_context: Optional[ClassDef] = None
+
+    def __init__(self):
+        self._segments = []
+        self._current_context = None
 
     @property
     def segments(self) -> List[Union[ClassDef, FuncDef]]:
@@ -207,8 +231,8 @@ class PythonCodeSplitter(TextSplitter):
 
     def __init__(self, max_file_lines: int = 50, **kwargs):
         super().__init__(**kwargs)
-        self._visitor = ClassAndFunctionVisitor()
         self._max_lines = max_file_lines
+        self._visitor = ClassAndFunctionVisitor()
 
     def split_text(self, text: str) -> List[str]:
         code_lines = text.replace("\r", "\n").split("\n")
