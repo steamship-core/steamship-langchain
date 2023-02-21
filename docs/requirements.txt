@@ -9,4 +9,4 @@ sphinx-typlog-theme==0.8.0
 sphinx-panels
 toml
 myst_nb
-steamship-langchain>=0.0.9
+steamship-langchain==0.0.10
