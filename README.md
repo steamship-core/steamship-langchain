@@ -1,6 +1,9 @@
 # Steamship Python Client Library For LangChain (🦜️🔗)
 
-[![Steamship](https://raw.githubusercontent.com/steamship-core/python-client/main/badge.svg)](https://www.steamship.com/build/langchain-apps?utm_source=github&utm_medium=badge&utm_campaign=github_repo&utm_id=github_langchain_repo)
+[![Steamship](https://raw.githubusercontent.com/steamship-core/python-client/main/badge.svg)](https://www.steamship.com/build/langchain-apps?utm_source=github&utm_medium=badge&utm_campaign=github_repo&utm_id=github_langchain_repo) [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/getsteamship.svg?style=social&label=Follow%20%40GetSteamship)](https://twitter.com/GetSteamship) [![](https://dcbadge.vercel.app/api/server/5Vry5ANVwT?compact=true&style=flat)](https://discord.gg/5Vry5ANVwT)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Run Tests](https://github.com/steamship-core/steamship-langchain/actions/workflows/test-main.yml/badge.svg?branch=main)](https://github.com/steamship-core/steamship-langchain/actions/workflows/test-main.yml)
+
 
 [Steamship](https://steamship.com/) is the fastest way to build, ship, and use full-lifecycle language AI.
 
@@ -32,6 +35,8 @@ Initial support is offered for the following (with more to follow soon):
 - LLMs
   - An adapter is provided for Steamship's OpenAI integration (`steamship_langchain.llms.OpenAI`)
   - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
+- Document Loaders
+  - An adapter for loading Steamship Files into Documents is provided (`steamship_langchain.document_loaders.SteamshipLoader`)
 - Tools
   - Search:
     - An adapter is provided for Steamship's SERPAPI integration (`SteamshipSERP`)
@@ -39,9 +44,21 @@ Initial support is offered for the following (with more to follow soon):
   - Two adapters that provide persistent conversation memory:
     - Complete Memory (`steamship_langchain.memory.ConversationBufferMemory`)
     - Windowed Memory (`steamship_langchain.memory.ConversationBufferWindowMemory`)
+- VectorStores
+  - An adapter is provided for a persistent VectorStore (`steamship_langchain.vectorstores.SteamshipVectorStore`)
+- Text Splitters
+  - A splitter for Python code, based on the AST, is provided (`steamship_langchain.python_splitter.PythonCodeSplitter`)
+- Miscellaneous Utilities
+  - Importing data into Steamship
+    - In order to take advantage of Steamship's persistent storage, an initial set of loader utilities are provided for a variety of sources, including:
+      - Text files: `steamship_langchain.file_loaders.TextFileLoader`
+      - Directories: `steamship_langchain.file_loaders.DirectoryLoader`
+      - GitHub repositories: `steamship_langchain.file_loaders.GitHubRepositoryLoader`
+      - YouTube videos: `steamship_langchain.file_loaders.YouTubeFileLoader`
+      - Various text and image formats: `steamship_langchain.file_loaders.UnstructuredFileLoader`
 
 ## 📖 Documentation
-Please see [here](https://docs.langchain.steamship.com/) for full documentation on:
+Please see our [here](https://steamship-langchain.readthedocs.org/) for full documentation on:
 
 - Getting started (installation, setting up the environment, simple examples)
 - How-To examples (demos, integrations, helper functions)
@@ -82,7 +99,7 @@ def greet(self, user: str) -> str:
       input_variables=["user"],
       template=
       "Create a welcome message for user {user}. Thank them for running their LangChain app on Steamship. "
-      "Encourage them to deploy their app via `ship deploy` when ready.",
+      "Encourage them to deploy their app via `ship it` when ready.",
     )
     llm = OpenAI(client=self.client, temperature=0.8)
     return llm(prompt.format(user=user))
@@ -321,11 +338,9 @@ Alternatively, you can run `ship login`, which will guide you through setting up
 
 ## Deploying on Steamship
 
-Deploying LangChain apps on Steamship is simple: `ship deploy`.
+Deploying LangChain apps on Steamship is simple: `ship it`.
 
-From your package directory (where your `api.py` lives), you can issue the `ship deploy` command to generate a manifest 
-file and push your package to Steamship. You may then use the Steamship SDK to create instances of your package in
-Workspaces as best fits your needs.
+From your package directory (where your `api.py` lives), you can issue the `ship it` command to generate a manifest file and push your package to Steamship. You may then use the Steamship SDK to create instances of your package in Workspaces as best fits your needs.
 
 More on deployment and Workspaces can be found in [our docs](https://docs.steamship.com/).
 

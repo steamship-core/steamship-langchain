@@ -28,7 +28,6 @@ reports/
 .hypothesis/
 
 # Jupyter
-*.ipynb
 .ipynb_checkpoints/
 notebooks/
 

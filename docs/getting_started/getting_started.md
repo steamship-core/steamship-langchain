@@ -34,7 +34,7 @@ Deploying your LangChain app to Steamship involves 3 simple steps:
 
 1. Use Steamship's adapters 
 2. Define your API endpoints 
-3. Ship deploy 
+3. Ship it! 
 
 ### Step 1: Use Steamship's adapters 
 
@@ -80,10 +80,10 @@ class JokeWizard(PackageService):
         return llm("Tell me a joke")
 ```
 
-### Step 3: Ship deploy 
+### Step 3: Ship it 
 
 That's it, now you can deploy your package:
 
 ```bash
-ship deploy
+ship it
 ```

@@ -1,12 +1,12 @@
-Welcome to Steamship 4 LangChain
+Welcome to Steamship-LangChain
 =================================
 
-⚡ Deploying 🦜️🔗LangChain LLM apps to production ⚡
+⚡ Deploy 🦜️🔗LangChain apps to production with 🚢 Steamship ⚡
 
 Getting Started
 ----------------
 
-Checkout the below guide for a walkthrough of how to move your Language Model application to production.
+Checkout the below guide for a walkthrough of how to move your application to production.
 
 - `Getting Started Documentation <./getting_started/getting_started.html>`_
 
@@ -27,13 +27,14 @@ Using these adapters enables you to leverage Steamship's infrastructure includin
 
 To guide you through the upgrade process we've included how-to guides and some examples for each LangChain module.
 
-Note: We're in alpha, so we don't have full support on all module's yet. We're confident we cover the most interesting use-cases though.
-Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for an overview of what is supported.
+Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for an overview of what is currently supported.
 
 
 - `Prompts <./adapters/prompts.html>`_
 
 - `LLMs <./adapters/llms.html>`_
+
+- `Document Loaders <./adapters/document_loaders.html>`_
 
 - `Chains <./adapters/chains.html>`_
 
@@ -52,6 +53,7 @@ Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for
 
    ./adapters/prompts.md
    ./adapters/llms.rst
+   ./adapters/document_loaders.rst
    ./adapters/chains.md
    ./adapters/agents.md
    ./adapters/memory.md
@@ -60,9 +62,10 @@ Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for
 Use Cases
 ----------
 
-The above adapters cover a ton of LangChain's use-cases. Below are some of the common use cases supported by Steamship.
+Here are some of the common use cases supported by Steamship:
 
 - `ChatGPT <./use_cases/chatgpt.html>`_
+- `QuestionAnswering <./use_cases/question_answering.html>`_
 
 
 .. toctree::
