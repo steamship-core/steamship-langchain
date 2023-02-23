@@ -11,7 +11,7 @@ production environments:
 - ``steamship_langchain.memory.ConversationBufferMemory``
 - ``steamship_langchain.memory.ConversationBufferWindowMemory``
 
-Our How-To Guide shows the persistent memory in action:
+Please see the following notebook for a demonstration of Steamship's persistent memory in action:
 
 - `How-To Guide <./memory/how_to_guide.html>`_: This guide shows how to use the ``steamship_langchain`` memory objects to save state.
 
@@ -21,5 +21,6 @@ Our How-To Guide shows the persistent memory in action:
    :maxdepth: 1
    :caption: Memory
    :name: Memory
+   :hidden:
 
    ./memory/how_to_guide.rst
