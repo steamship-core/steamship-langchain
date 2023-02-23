@@ -36,7 +36,7 @@ Initial support is offered for the following (with more to follow soon):
   - An adapter is provided for Steamship's OpenAI integration (`steamship_langchain.llms.OpenAI`)
   - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
 - Document Loaders
-  - An adapter for loading Steamship Files into Documents is provided (`steamship_langchain.document_loaders.SteamshipLoader`)
+  - An adapter for exporting Steamship Files as LangChain Documents is provided (`steamship_langchain.document_loaders.SteamshipLoader`)
 - Tools
   - Search:
     - An adapter is provided for Steamship's SERPAPI integration (`SteamshipSERP`)
@@ -47,7 +47,7 @@ Initial support is offered for the following (with more to follow soon):
 - VectorStores
   - An adapter is provided for a persistent VectorStore (`steamship_langchain.vectorstores.SteamshipVectorStore`)
 - Text Splitters
-  - A splitter for Python code, based on the AST, is provided (`steamship_langchain.python_splitter.PythonCodeSplitter`)
+  - A splitter for Python code, based on the AST, is provided (`steamship_langchain.python_splitter.PythonCodeSplitter`). This provides additional context for code snippets (parent classes) while breaking the code into segments around function definitions.
 - Miscellaneous Utilities
   - Importing data into Steamship
     - In order to take advantage of Steamship's persistent storage, an initial set of loader utilities are provided for a variety of sources, including:
