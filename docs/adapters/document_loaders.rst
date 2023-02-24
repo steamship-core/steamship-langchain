@@ -18,4 +18,4 @@ The following notebook provides a demonstration of how to use the SteamshipLoade
    :name: Document Loaders
    :hidden:
 
-   ./document_loaders/how_to_guides.rst
+   ./document_loaders/how_to_guide.ipynb
