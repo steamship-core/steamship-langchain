@@ -10,6 +10,8 @@ To get the most out of Steamship's cloud platform you'll be using adapters. Stea
   * ✅ LLM Caching using `steamship_langchain.cache.SteamshipCache`
   * ❌ LLM Serialisation 
   * ✅ Token Usage Tracking supported by `steamship_langchain.llms.OpenAI`
+* Callbacks
+  * ✅ Log verbose messages via `steamship_langchain.callbacks.LoggingCallbackHandler`
 * Document Loaders
   * ✅ Import Steamship Files using `steamship_langchain.document_loaders.SteamshipLoader`
 * Prompt
