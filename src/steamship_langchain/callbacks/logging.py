@@ -50,16 +50,13 @@ class LoggingCallbackHandler(BaseCallbackHandler):
     ) -> None:
         logging.debug(f"on_tool_start input_str={input_str}")
 
-    def on_agent_action(
-        self, action: AgentAction, color: Optional[str] = None, **kwargs: Any
-    ) -> Any:
+    def on_agent_action(self, action: AgentAction, **kwargs: Any) -> Any:
         """Run on agent action."""
         logging.info(f"{action.log}")
 
     def on_tool_end(
         self,
         output: str,
-        color: Optional[str] = None,
         observation_prefix: Optional[str] = None,
         llm_prefix: Optional[str] = None,
         **kwargs: Any,
@@ -70,18 +67,10 @@ class LoggingCallbackHandler(BaseCallbackHandler):
     def on_tool_error(self, error: Union[Exception, KeyboardInterrupt], **kwargs: Any) -> None:
         logging.error(f"on_tool_error error={error!s}")
 
-    def on_text(
-        self,
-        text: str,
-        color: Optional[str] = None,
-        end: str = "",
-        **kwargs: Optional[str],
-    ) -> None:
+    def on_text(self, text: str, **kwargs: Optional[str]) -> None:
         """Run when agent ends."""
-        logging.info(f"{text}")
+        logging.info(text)
 
-    def on_agent_finish(
-        self, finish: AgentFinish, color: Optional[str] = None, **kwargs: Any
-    ) -> None:
+    def on_agent_finish(self, finish: AgentFinish, **kwargs: Any) -> None:
         """Run on agent end."""
         logging.info(f"{finish.log}")
