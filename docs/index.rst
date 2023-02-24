@@ -34,6 +34,8 @@ Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for
 
 - `LLMs <./adapters/llms.html>`_
 
+- `Callbacks <./adapters/callbacks.html>`_
+
 - `Document Loaders <./adapters/document_loaders.html>`_
 
 - `Chains <./adapters/chains.html>`_
@@ -53,6 +55,7 @@ Have a look at our `Coverage Page <./getting_started/getting_started.html>`_ for
 
    ./adapters/prompts.md
    ./adapters/llms.rst
+   ./adapters/callbacks.rst
    ./adapters/document_loaders.rst
    ./adapters/chains.md
    ./adapters/agents.md
@@ -75,6 +78,7 @@ Here are some of the common use cases supported by Steamship:
    :hidden:
 
    ./use_cases/chatgpt.ipynb
+   ./use_cases/question_answering.md
 
 
 Coverage and Roadmap
