@@ -35,6 +35,8 @@ Initial support is offered for the following (with more to follow soon):
 - LLMs
   - An adapter is provided for Steamship's OpenAI integration (`steamship_langchain.llms.OpenAI`)
   - An adapter is provided for *caching* LLM calls, via Steamship's Key-Value store (`SteamshipCache`) 
+- Callbacks
+  - A callback that uses Python's `logging` module to record events is provided (`steamship_langchain.callbacks.LoggingCallbackHandler`). This can be used with `ship logs` to access verbose logs when deployed.
 - Document Loaders
   - An adapter for exporting Steamship Files as LangChain Documents is provided (`steamship_langchain.document_loaders.SteamshipLoader`)
 - Tools
