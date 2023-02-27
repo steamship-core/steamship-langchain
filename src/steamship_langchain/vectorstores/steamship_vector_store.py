@@ -66,11 +66,11 @@ class SteamshipVectorStore(VectorStore):
                 "embedder": {
                     "plugin_handle": "openai-embedder",
                     "instance_handle": self.index_name,
-                    "fetch_if_exists": False,
+                    "fetch_if_exists": True,
                     "config": {"model": embedding, "dimensionality": get_dimensionality(embedding)},
                 }
             },
-            fetch_if_exists=False,
+            fetch_if_exists=True,
         )
 
     def add_texts(self, texts: Iterable[str], metadatas: Optional[List[dict]] = None) -> None:
