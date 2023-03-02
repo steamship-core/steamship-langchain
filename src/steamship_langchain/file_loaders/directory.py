@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel
-from steamship import File, Steamship
+from steamship import File, Steamship, SteamshipError
 
 from steamship_langchain.file_loaders.base import BaseFileLoader
 
@@ -22,6 +22,9 @@ class DirectoryLoader(BaseModel):
 
     skip_images: bool = True
     "By default, the directory loader will ignore image files."
+
+    ignore_failures: bool = False
+    "By default, the directory loader will fail if any individual file fails to load. Set to True to ignore individual failures."
 
     def load(
         self, path: str, glob: str = "**/*", metadata: Optional[Dict[str, str]] = None
@@ -42,6 +45,10 @@ class DirectoryLoader(BaseModel):
             if self.skip_images and (f.name.endswith(".png") or f.name.endswith(".jpg")):
                 continue
             if f.is_file():
-                file_list = self.file_loader.load(str(f.absolute()), metadata)
-                files.extend(file_list)
+                try:
+                    file_list = self.file_loader.load(str(f.absolute()), metadata)
+                    files.extend(file_list)
+                except SteamshipError as e:
+                    if not self.ignore_failures:
+                        raise e
         return files
