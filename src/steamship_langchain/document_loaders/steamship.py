@@ -49,6 +49,7 @@ class SteamshipLoader(BaseLoader, BaseModel):
         else:
             source = self.files
 
+        docs = []
         for file in source:
             metadata = {"source": file.handle}
             provenance = _get_provenance_tag(file)
@@ -57,6 +58,9 @@ class SteamshipLoader(BaseLoader, BaseModel):
 
             if self.collapse_blocks:
                 text = self.join_str.join([b.text for b in file.blocks])
-                return [Document(page_content=text, metadata=metadata)]
+                docs.append(Document(page_content=text, metadata=metadata))
+                continue
 
-            return [Document(page_content=b.text, metadata=metadata) for b in file.blocks]
+            docs.extend([Document(page_content=b.text, metadata=metadata) for b in file.blocks])
+
+        return docs

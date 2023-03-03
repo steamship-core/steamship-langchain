@@ -26,7 +26,7 @@ class GitHubRepositoryLoader(BaseModel):
     "Provides Steamship workspace-scoping for File loading."
 
     repository_path: str
-    "The Github repo path (part after https://github.com). Typically <org-name>/<repo-name>. " "Example: steamship-core/steamship-langchain"
+    "The Github repo path (part after https://github.com). Typically <org-name>/<repo-name>. Example: steamship-core/steamship-langchain"
 
     branch_or_tag: str
     "The ref to checkout and load." "Example: v2.0.1"
@@ -37,8 +37,16 @@ class GitHubRepositoryLoader(BaseModel):
         "files will be loaded into Steamship.",
     )
 
+    ignore_failures: bool = False
+    "By default, the directory loader will fail if any individual file fails to load. Set to True to ignore individual failures."
+
     def __init__(
-        self, repository_path: str, branch_or_tag: str = "main", glob: str = "**/*", **kwargs
+        self,
+        repository_path: str,
+        branch_or_tag: str = "main",
+        glob: str = "**/*",
+        ignore_failures=False,
+        **kwargs,
     ):
         """Initialize the loader with Steamship workspace and GitHub repo URL.
 
@@ -49,7 +57,11 @@ class GitHubRepositoryLoader(BaseModel):
         :raises ValueError: if `gitpython` package has not been installed.
         """
         super().__init__(
-            repository_path=repository_path, branch_or_tag=branch_or_tag, glob=glob, **kwargs
+            repository_path=repository_path,
+            branch_or_tag=branch_or_tag,
+            glob=glob,
+            ignore_failures=ignore_failures,
+            **kwargs,
         )
         try:
             import git  # noqa: F401
@@ -68,7 +80,9 @@ class GitHubRepositoryLoader(BaseModel):
             git_cli.checkout(self.branch_or_tag)
 
             dir_loader = DirectoryLoader(
-                client=self.client, file_loader=TextFileLoader(client=self.client)
+                client=self.client,
+                file_loader=TextFileLoader(client=self.client),
+                ignore_failures=self.ignore_failures,
             )
             files = dir_loader.load(tmp_dir_name, glob=self.glob, metadata=metadata)
 
