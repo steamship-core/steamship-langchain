@@ -34,19 +34,20 @@ class SphinxSiteLoaderBase(BaseFileLoader):
     """Load sphinx websites into Steamship.
 
     Note:
-        Requires install of BeautifulSoup, via:
-        `pip install bs4`
+        Requires install of BeautifulSoup, via: `pip install bs4`
     """
 
     tag_name: str
-    "Name of html tag to use for imports"
+    "Name of html tag to use for imports. Example: section"
 
     tag_attributes: Dict[str, str] = {}
-    "Identifying attributes for the tag"
+    "Identifying attributes for the tag. Example: {'id': 'main-content'}"
 
     scheme: str = "https://"
+    "The URL scheme to use when creating provenance tags"
 
-    use_section_id_in_provenance: bool = True
+    use_tag_id_in_provenance: bool = True
+    "Controls appending section tags to provenance URLs (a la: #some-header-in-doc)"
 
     def load(self, path: str, metadata: Optional[Dict[str, str]] = None) -> List[File]:
         """Load documents."""
@@ -67,14 +68,14 @@ class SphinxSiteLoaderBase(BaseFileLoader):
         for p in Path(path).rglob("*.html"):
             if p.is_dir():
                 continue
-            with open(p) as f:
+            with p.open() as f:
                 logging.info(f"loading: {p}")
                 base_url = f"{self.scheme}{p.relative_to(path)}"
                 texts = _clean_data(f.read())
 
                 for text, section_id in texts:
                     url = base_url
-                    if len(section_id) > 0 and self.use_section_id_in_provenance:
+                    if len(section_id) > 0 and self.use_tag_id_in_provenance:
                         url = f"{base_url}#{section_id}"
 
                     logging.debug(f"setting provenance to: {url}")
@@ -97,7 +98,7 @@ class SphinxSiteLoader(SphinxSiteLoaderBase):
 
     tag_name: str = "article"
     tag_attributes: Dict[str, str] = {"class": "bd-article", "role": "main"}
-    use_section_id_in_provenance: bool = False
+    use_tag_id_in_provenance: bool = False
 
 
 class SphinxSiteSectionLoader(SphinxSiteLoaderBase):
@@ -111,4 +112,4 @@ class ReadTheDocsLoader(SphinxSiteLoaderBase):
 
     tag_name: str = "main"
     tag_attributes: Dict[str, str] = {"id": "main-content"}
-    use_section_id_in_provenance: bool = False
+    use_tag_id_in_provenance: bool = False
