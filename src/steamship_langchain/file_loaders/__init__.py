@@ -13,6 +13,11 @@ from steamship_langchain.file_loaders.base import (
 )
 from steamship_langchain.file_loaders.directory import DirectoryLoader
 from steamship_langchain.file_loaders.github import GitHubRepositoryLoader
+from steamship_langchain.file_loaders.sphinx import (
+    ReadTheDocsLoader,
+    SphinxSiteLoader,
+    SphinxSiteSectionLoader,
+)
 from steamship_langchain.file_loaders.text import TextFileLoader
 from steamship_langchain.file_loaders.unstructured import UnstructuredFileLoader
 from steamship_langchain.file_loaders.youtube import YouTubeFileLoader
@@ -23,6 +28,9 @@ __all__ = [
     "DirectoryLoader",
     "generate_file_tags",
     "GitHubRepositoryLoader",
+    "ReadTheDocsLoader",
+    "SphinxSiteSectionLoader",
+    "SphinxSiteLoader",
     "TextFileLoader",
     "UnstructuredFileLoader",
     "YouTubeFileLoader",
