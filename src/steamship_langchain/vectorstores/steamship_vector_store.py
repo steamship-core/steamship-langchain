@@ -120,17 +120,13 @@ class SteamshipVectorStore(VectorStore):
                     source_texts.append(block.text)
 
             texts = [_sanitize_text(t) for t in source_texts if len(t) > 0]
-            if len(texts) == 0:
-                continue
-
-            provenance = _get_provenance(file)
-
-            metadatas = [
-                {"source": f"{file.handle}-chunk-{i}", "provenance": f"{provenance}"}
-                for i, t in enumerate(texts)
-            ]
-            self.add_texts(texts, metadatas)
-            ids.extend([f"{file.handle}-chunk-{i}" for i, _ in enumerate(texts)])
+            if len(texts) > 0:
+                provenance = _get_provenance(file)
+                metadatas = [
+                    {"source": f"{file.handle}-chunk-{i}", "provenance": f"{provenance}"}
+                    for i, t in enumerate(texts)
+                ]
+                ids.extend(self.add_texts(texts, metadatas))
 
         return ids
 
@@ -147,13 +143,13 @@ class SteamshipVectorStore(VectorStore):
             List of ids from adding the texts into the vectorstore.
         """
         items = [
-            Tag(client=self.client, text=text, value=metadata)
+            Tag(client=self.client, id=str(uuid.uuid1()), text=text, value=metadata)
             for i, (text, metadata) in enumerate(zip_longest(texts, metadatas or []))
         ]
 
         self.index.insert(items)
 
-        return [str(uuid.uuid1()) for _ in texts]
+        return [t.id for t in items]
 
     def similarity_search(self, query: str, k: int = 4, **kwargs: Any) -> List[Document]:
         search_results = self.index.search(query, k=k)
@@ -190,7 +186,7 @@ class SteamshipVectorStore(VectorStore):
     ) -> VectorStore:
         """Construct SteamshipVectorStore wrapper from raw texts.
 
-        This is a user friendly interface that:
+        This is a user-friendly interface that:
             1. Embeds documents.
             2. Creates an in memory docstore
             3. Initializes the SteamshipVectorStore database
@@ -219,7 +215,7 @@ class SteamshipVectorStore(VectorStore):
     ) -> VectorStore:
         """Construct SteamshipVectorStore wrapper from Steamship Files.
 
-        This is a user friendly interface that:
+        This is a user-friendly interface that:
             1. Embeds documents.
             2. Creates an in memory docstore
             3. Initializes the SteamshipVectorStore database
