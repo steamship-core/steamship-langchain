@@ -43,9 +43,7 @@ Initial support is offered for the following (with more to follow soon):
   - Search:
     - An adapter is provided for Steamship's SERPAPI integration (`SteamshipSERP`)
 - Memory
-  - Two adapters that provide persistent conversation memory:
-    - Complete Memory (`steamship_langchain.memory.ConversationBufferMemory`)
-    - Windowed Memory (`steamship_langchain.memory.ConversationBufferWindowMemory`)
+  - Chat History (`steamship_langchain.memory.ChatMessageHistory`)
 - VectorStores
   - An adapter is provided for a persistent VectorStore (`steamship_langchain.vectorstores.SteamshipVectorStore`)
 - Text Splitters
@@ -56,6 +54,7 @@ Initial support is offered for the following (with more to follow soon):
       - Text files: `steamship_langchain.file_loaders.TextFileLoader`
       - Directories: `steamship_langchain.file_loaders.DirectoryLoader`
       - GitHub repositories: `steamship_langchain.file_loaders.GitHubRepositoryLoader`
+      - Sphinx documentation sites: `steamship_langchain.file_loaders.SphinxSiteLoader` (and others)
       - YouTube videos: `steamship_langchain.file_loaders.YouTubeFileLoader`
       - Various text and image formats: `steamship_langchain.file_loaders.UnstructuredFileLoader`
 
@@ -159,15 +158,15 @@ Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (ful
 #### Server Snippet
 
 ```python
-from steamship_langchain.llms import OpenAI
-from steamship_langchain.memory import ConversationBufferWindowMemory
+from langchain.memory import ConversationBufferWindowMemory
 
+from steamship_langchain.llms import OpenAI
+from steamship_langchain.memory import ChatMessageHistory
 
 @post("/send_message")
 def send_message(self, message: str, chat_history_handle: str) -> str:
-  mem = ConversationBufferWindowMemory(client=self.client,
-                                       key=chat_history_handle,
-                                       k=2)
+  chat_memory = ChatMessageHistory(client=self.client, key=chat_history_handle)
+  mem = ConversationBufferWindowMemory(chat_memory=chat_memory, k=2)
   chatgpt = LLMChain(
     llm=OpenAI(client=self.client, temperature=0),
     prompt=CHATBOT_PROMPT,

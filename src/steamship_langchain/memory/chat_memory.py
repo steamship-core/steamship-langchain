@@ -48,14 +48,10 @@ class ChatMessageHistory(BaseChatMessageHistory):
 
         messages = []
         for b in blocks:
-            if b.text.startswith(ChatMessageHistory.HUMAN_PREFIX):
-                messages.append(
-                    HumanMessage(content=b.text[len(ChatMessageHistory.HUMAN_PREFIX) :])
-                )
-            elif b.text.startswith(ChatMessageHistory.AI_PREFIX):
-                messages.append(
-                    HumanMessage(content=b.text[len(ChatMessageHistory.HUMAN_PREFIX) :])
-                )
+            if b.text.startswith(self.HUMAN_PREFIX):
+                messages.append(HumanMessage(content=b.text[len(self.HUMAN_PREFIX) :]))
+            elif b.text.startswith(self.AI_PREFIX):
+                messages.append(HumanMessage(content=b.text[len(self.HUMAN_PREFIX) :]))
             else:
                 raise ValueError(f"Found unsupported message type: {b.text}")
         return messages

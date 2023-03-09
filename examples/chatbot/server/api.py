@@ -1,9 +1,10 @@
 from langchain.chains import LLMChain
+from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from prompt import CHATBOT_PROMPT
 from steamship.invocable import PackageService, get, post
 
 from steamship_langchain.llms import OpenAI
-from steamship_langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
+from steamship_langchain.memory import ChatMessageHistory
 
 
 class ChatbotPackage(PackageService):
@@ -12,13 +13,12 @@ class ChatbotPackage(PackageService):
         """Returns an AI-generated response to a user conversation, based on limited prior context."""
 
         # steamship_memory will persist/retrieve conversation across API calls
-        steamship_memory = ConversationBufferWindowMemory(
-            client=self.client, key=chat_history_handle, k=2
-        )
+        steamship_memory = ChatMessageHistory(client=self.client, key=chat_history_handle)
+        chat_buffer = ConversationBufferWindowMemory(chat_memory=steamship_memory, k=2)
         chatgpt = LLMChain(
             llm=OpenAI(client=self.client, temperature=0),
             prompt=CHATBOT_PROMPT,
-            memory=steamship_memory,
+            memory=chat_buffer,
         )
         return chatgpt.predict(human_input=message)
 
@@ -27,6 +27,7 @@ class ChatbotPackage(PackageService):
         """Return the full transcript for a chat session."""
 
         # we can use the non-windowed memory to retrieve the full history.
-        steamship_memory = ConversationBufferMemory(client=self.client, key=chat_history_handle)
+        steamship_memory = ChatMessageHistory(client=self.client, key=chat_history_handle)
+        chat_buffer = ConversationBufferMemory(chat_memory=steamship_memory)
 
-        return steamship_memory.load_memory_variables(inputs={}).get("history", "")
+        return chat_buffer.load_memory_variables(inputs={}).get("history", "")
