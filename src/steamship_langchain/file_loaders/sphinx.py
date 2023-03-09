@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
-from steamship import Block, File, MimeTypes, Steamship, Tag
+from steamship import Block, File, MimeTypes, Steamship, SteamshipError, Tag
 from steamship.data import TagKind, TagValueKey
 from steamship.data.tags.tag_constants import ProvenanceTag
 
@@ -30,6 +30,22 @@ def generate_url_tags(client: Steamship, url: str, metadata: Optional[Dict[str, 
     return tags
 
 
+def _sanitize_text(text: str) -> str:
+    """Replace known problematic characters in text with underscores.
+
+    NB: This set is probably woefully incomplete, but should, at the least,
+    prevent *known* failures.
+    """
+    return text.translate(
+        str.maketrans(
+            {
+                "$": "_",
+                "%": "_",
+            }
+        )
+    )
+
+
 class SphinxSiteLoaderBase(BaseFileLoader):
     """Load sphinx websites into Steamship.
 
@@ -49,7 +65,15 @@ class SphinxSiteLoaderBase(BaseFileLoader):
     use_tag_id_in_provenance: bool = True
     "Controls appending section tags to provenance URLs (a la: #some-header-in-doc)"
 
-    def load(self, path: str, metadata: Optional[Dict[str, str]] = None) -> List[File]:
+    ignore_failures: bool = False
+    "By default, the loader will fail if any individual file fails to load. Set to True to ignore individual failures."
+
+    sanitize_files: bool = False
+    "Some files may have content that causes Steamship to reject raw upload. Set to True to remove known problematic characters."
+
+    def load(  # noqa: C901
+        self, path: str, metadata: Optional[Dict[str, str]] = None
+    ) -> List[File]:
         """Load documents."""
         from bs4 import BeautifulSoup
 
@@ -74,6 +98,8 @@ class SphinxSiteLoaderBase(BaseFileLoader):
                 texts = _clean_data(f.read())
 
                 for text, section_id in texts:
+                    if self.sanitize_files:
+                        text = _sanitize_text(text)
                     url = base_url
                     if len(section_id) > 0 and self.use_tag_id_in_provenance:
                         url = f"{base_url}#{section_id}"
@@ -81,14 +107,17 @@ class SphinxSiteLoaderBase(BaseFileLoader):
                     logging.debug(f"setting provenance to: {url}")
                     tags = generate_url_tags(client=self.client, url=url, metadata=metadata)
 
-                    files.append(
-                        File.create(
+                    try:
+                        f = File.create(
                             client=self.client,
                             mime_type=MimeTypes.TXT,
                             blocks=[Block(text=text)],
                             tags=tags,
                         )
-                    )
+                        files.append(f)
+                    except SteamshipError as e:
+                        if not self.ignore_failures:
+                            raise e
 
         return files
 
