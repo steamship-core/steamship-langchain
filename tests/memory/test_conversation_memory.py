@@ -1,7 +1,8 @@
 import pytest
+from langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
 from steamship import Steamship
 
-from steamship_langchain.memory import ConversationBufferMemory, ConversationBufferWindowMemory
+from steamship_langchain.memory import ChatMessageHistory
 
 TEST_PROMPT = "this is a test: "
 LLM_STRING = "llm"
@@ -12,7 +13,8 @@ UNKNOWN = "unknown"
 def test_persistent_memory(client: Steamship):
     # example responses heavily borrowed from:
     # https://langchain.readthedocs.io/en/latest/modules/memory/examples/chatgpt_clone.html
-    memory_under_test = ConversationBufferMemory(client=client, key="user-1234-session-1")
+    memory = ChatMessageHistory(client=client, key="user-1234-session-1")
+    memory_under_test = ConversationBufferMemory(chat_memory=memory)
 
     memory_variables = memory_under_test.load_memory_variables(inputs={})
     assert len(memory_variables) == 1
@@ -125,9 +127,8 @@ round-trip min/avg/max/stddev = 14.945/14.945/14.945/0.000 ms
 def test_persistent_window_memory(client: Steamship):
     # example responses heavily borrowed from:
     # https://langchain.readthedocs.io/en/latest/modules/memory/examples/chatgpt_clone.html
-    memory_under_test = ConversationBufferWindowMemory(
-        client=client, key="user-1234-session-2", k=2
-    )
+    memory = ChatMessageHistory(client=client, key="user-1234-session-1")
+    memory_under_test = ConversationBufferWindowMemory(chat_memory=memory, k=2)
 
     memory_variables = memory_under_test.load_memory_variables(inputs={})
     assert len(memory_variables) == 1

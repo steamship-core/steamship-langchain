@@ -23,8 +23,7 @@ To get the most out of Steamship's cloud platform you'll be using adapters. Stea
 * Agents 
   * ✅ SERPAPI using `steamship_langchain.tools.SteamshipSERP`
 * Memory
-  * ✅ Complete Memory using `steamship_langchain.memory.ConversationBufferMemory`
-  * ✅ Windowed Memory using ``steamship_langchain.memory.ConversationBufferWindowMemory``
+  * ✅ ChatMessageHistory using `steamship_langchain.memory.ChatMessageHistory`
 * ⚒️ Utils 
   * ✅ VectorStores using `steamship_langchain.vectorstore.SteamshipVectorStore`
   * ✅ Python code splitter using `steamship_langchain.python_splitter.PythonCodeSplitter`

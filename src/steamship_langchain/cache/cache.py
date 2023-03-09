@@ -47,7 +47,7 @@ class SteamshipCache(BaseCache):
             logging.debug(f"cache hit for {prompt}")
             generations = []
             for _, text in value_dict.items():
-                generations.append(Generation(text))
+                generations.append(Generation(text=text))
             return generations
 
         logging.debug(f"cache miss for {prompt}")
