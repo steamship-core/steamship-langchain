@@ -7,9 +7,11 @@ from typing import Any, Dict, Generator, List, Mapping, Optional
 import tiktoken
 from langchain.llms.base import Generation, LLMResult
 from langchain.llms.openai import BaseOpenAI
-from pydantic import root_validator
-from steamship import Block, File, Steamship, SteamshipError
+from langchain.llms.openai import OpenAIChat as BaseOpenAIChat
+from pydantic import Extra, root_validator
+from steamship import Block, File, MimeTypes, PluginInstance, Steamship, SteamshipError, Tag
 from steamship.data import TagKind, TagValueKey
+from steamship.data.tags.tag_constants import RoleTag
 
 PLUGIN_HANDLE: str = "gpt-3"
 ARGUMENT_WHITELIST = {
@@ -91,7 +93,6 @@ class OpenAI(BaseOpenAI):
 
     @root_validator(pre=True)
     def raise_on_unsupported_arguments(cls, values: Dict[str, Any]) -> Dict[str, Any]:  # noqa: N805
-
         if unsupported_arguments := set(values.keys()) - ARGUMENT_WHITELIST:
             raise NotImplementedError(f"Found unsupported argument: {unsupported_arguments}")
         return values
@@ -188,3 +189,102 @@ class OpenAI(BaseOpenAI):
             pass
 
         return generations, token_usage
+
+
+class OpenAIChat(BaseOpenAIChat):
+    _llm_plugin: PluginInstance
+
+    class Config:
+        """Configuration for this pydantic object."""
+
+        extra = Extra.allow
+
+    def __init__(
+        self, client: Steamship, model_name: str = "gpt-4", moderate_output: bool = True, **kwargs
+    ):
+        super().__init__(client=client, model_name=model_name, **kwargs)
+        plugin_config = {"model": self.model_name, "moderate_output": moderate_output}
+        if self.openai_api_key:
+            plugin_config["openai_api_key"] = self.openai_api_key
+
+        model_args = self.model_kwargs
+        for arg in [
+            "max_tokens",
+            "temperature",
+            "top_p",
+            "presence_penalty",
+            "frequency_penalty",
+            "max_retries",
+        ]:
+            if model_args.get(arg):
+                plugin_config[arg] = model_args[arg]
+
+        self._llm_plugin = self.client.use_plugin(
+            plugin_handle="gpt-4",
+            config=plugin_config,
+            fetch_if_exists=True,
+        )
+
+    @root_validator()
+    def validate_environment(cls, values: Dict) -> Dict:  # noqa: N805
+        return values
+
+    def _completion(self, messages: [Dict[str, str]], **params) -> str:
+        blocks = []
+        for msg in messages:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+
+            if len(content) > 0:
+                role_tag = RoleTag.USER
+                if role.lower() == "system":
+                    role_tag = RoleTag.SYSTEM
+                elif role.lower() == "assistant":
+                    role_tag = RoleTag.ASSISTANT
+                blocks.append(
+                    Block(
+                        text=content,
+                        tags=[Tag(kind=TagKind.ROLE, name=role_tag)],
+                        mime_type=MimeTypes.TXT,
+                    )
+                )
+
+        file = File.create(self.client, blocks=blocks)
+        generate_task = self._llm_plugin.generate(input_file_id=file.id, options=params)
+        generate_task.wait()
+        return generate_task.output.blocks[0].text
+
+    def _generate(self, prompts: List[str], stop: Optional[List[str]] = None) -> LLMResult:
+        messages, params = self._get_chat_params(prompts, stop)
+        generated_text = self._completion(messages=messages, **params)
+        return LLMResult(
+            generations=[[Generation(text=generated_text)]],
+            # TODO(dougreid): token usage calculations !!!
+        )
+
+    @property
+    def _identifying_params(self) -> Mapping[str, Any]:
+        """Get the identifying parameters."""
+        return {
+            **{
+                "model_name": self.model_name,
+                "workspace_handle": self.client.get_workspace().handle,
+                "plugin_handle": "gpt-4",
+            },
+            **self._default_params,
+        }
+
+    @property
+    def _llm_type(self) -> str:
+        """Return type of llm."""
+        return "steamship-openai-chat"
+
+    def get_num_tokens(self, text: str) -> int:
+        """Calculate num tokens with tiktoken package."""
+        encoder = "p50k_base"
+        enc = tiktoken.get_encoding(encoder)
+        tokenized_text = enc.encode(text)
+        return len(tokenized_text)
+
+    async def agenerate(self, prompts: List[str], stop: Optional[List[str]] = None) -> LLMResult:
+        raise NotImplementedError("Support for async is not provided yet.")

@@ -6,7 +6,7 @@ from langchain.agents.self_ask_with_search.prompt import PROMPT
 from langchain.llms.loading import load_llm
 from steamship import Steamship
 
-from steamship_langchain.llms.openai import OpenAI
+from steamship_langchain.llms.openai import OpenAI, OpenAIChat
 
 
 @pytest.mark.usefixtures("client")
@@ -121,3 +121,35 @@ def test_openai_streaming_unsupported(client: Steamship) -> None:
     llm = OpenAI(client=client, max_tokens=10)
     with pytest.raises(NotImplementedError):
         llm.stream("I'm Pickle Rick")
+
+
+@pytest.mark.usefixtures("client")
+def test_openai_chat_llm(client: Steamship) -> None:
+    """Test Chat version of the LLM"""
+    llm = OpenAIChat(client=client)
+    llm_result = llm.generate(prompts=["Please say the Pledge of Allegiance"], stop=["flag"])
+    assert len(llm_result.generations) == 1
+    generation = llm_result.generations[0]
+    assert len(generation) == 1
+    text_response = generation[0].text
+    assert text_response.strip() == "I pledge allegiance to the"
+
+
+@pytest.mark.usefixtures("client")
+def test_openai_chat_llm_with_prefixed_messages(client: Steamship) -> None:
+    """Test Chat version of the LLM"""
+    messages = [
+        {
+            "role": "system",
+            "content": "You are EchoGPT. For every prompt you receive, you reply with the exact same text.",
+        },
+        {"role": "user", "content": "This is a test."},
+        {"role": "assistant", "content": "This is a test."},
+    ]
+    llm = OpenAIChat(client=client, prefix_messages=messages)
+    llm_result = llm.generate(prompts=["What is the meaning of life?"])
+    assert len(llm_result.generations) == 1
+    generation = llm_result.generations[0]
+    assert len(generation) == 1
+    text_response = generation[0].text
+    assert text_response.strip() == "What is the meaning of life?"
