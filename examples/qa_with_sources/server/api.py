@@ -43,8 +43,9 @@ class QuestionAnsweringPackage(PackageService):
     def qa_with_sources(self, query: str) -> Dict[str, Any]:
         chain = VectorDBQAWithSourcesChain.from_chain_type(
             OpenAI(client=self.client, temperature=0),
-            chain_type="map_reduce",
+            chain_type="stuff",
             vectorstore=self.index,
+            return_source_documents=True,
         )
 
-        return chain({"question": query}, return_only_outputs=False)
+        return chain({"question": query})

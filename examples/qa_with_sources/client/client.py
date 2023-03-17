@@ -4,7 +4,7 @@ from steamship import Block, File, RuntimeEnvironments, Steamship, check_environ
 from termcolor import colored
 
 STATE_OF_THE_UNION_PATH = (
-    Path(__file__).parent.parent.parent.parent / "docs" / "state_of_the_union.txt"
+    Path(__file__).parent.resolve().parent.parent.parent / "docs" / "state_of_the_union.txt"
 )
 
 
@@ -37,7 +37,7 @@ def main():
         print(colored("Awaiting results. Please be patient. This may take a few moments.", "blue"))
 
         response = api.invoke("/qa_with_sources", query=query)  # question, answer, sources
-        print(colored("Answer: ", "blue"), f"{response['result'].strip()}")
+        print(colored("Answer: ", "blue"), f"{response['answer'].strip()}")
 
         # Print sources (with text)
         sources = response["source_documents"]
