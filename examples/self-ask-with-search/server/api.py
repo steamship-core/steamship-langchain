@@ -21,7 +21,9 @@ class SelfAskWithSeachPackage(PackageService):
         """Returns a dictionary containing both the answer for the query and any intermediate steps taken."""
         llm = OpenAI(client=self.client, temperature=0.0, cache=True)
         serp_tool = SteamshipSERP(client=self.client, cache=True)
-        tools = [Tool(name="Intermediate Answer", func=serp_tool.search)]
+        tools = [
+            Tool(name="Intermediate Answer", func=serp_tool.search, description="Google Search")
+        ]
         self_ask_with_search = initialize_agent(
             tools, llm, agent="self-ask-with-search", verbose=False, return_intermediate_steps=True
         )

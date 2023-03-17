@@ -1,8 +1,8 @@
 {
 	"type": "package",
 	"handle": "test-self-ask-with-search",
-	"version": "0.0.1",
-	"description": null,
+	"version": "0.0.4",
+	"description": "",
 	"author": "doug",
 	"entrypoint": "Unused",
 	"public": true,
