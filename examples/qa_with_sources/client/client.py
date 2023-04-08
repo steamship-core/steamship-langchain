@@ -4,7 +4,7 @@ from steamship import Block, File, RuntimeEnvironments, Steamship, check_environ
 from termcolor import colored
 
 STATE_OF_THE_UNION_PATH = (
-    Path(__file__).parent.resolve().parent.parent.parent / "docs" / "state_of_the_union.txt"
+    Path(__file__).parent.resolve().parent / "state-of-the-union-2022.txt"
 )
 
 
