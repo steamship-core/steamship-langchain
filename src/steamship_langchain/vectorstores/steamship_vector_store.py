@@ -1,3 +1,4 @@
+import time
 import uuid
 from itertools import zip_longest
 from typing import Any, Iterable, List, Optional
@@ -201,6 +202,7 @@ class SteamshipVectorStore(VectorStore):
         """
 
         svs = cls(client=client, index_name=index_name, embedding=embedding)
+        time.sleep(.5)
         svs.add_texts(texts=texts, metadatas=metadatas)
         return svs
 
