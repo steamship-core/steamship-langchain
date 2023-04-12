@@ -8,6 +8,8 @@ from steamship.data import TagKind, TagValueKey
 
 from steamship_langchain.vectorstores import SteamshipVectorStore
 
+INDEX_NAME = "test-index-001"
+
 
 @pytest.mark.usefixtures("client")
 @pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
@@ -15,7 +17,7 @@ def test_steamship_vector_store_from_texts(client: Steamship, model: str) -> Non
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
     docsearch = SteamshipVectorStore.from_texts(
-        client=client, texts=texts, embedding=model, index_name="test-index"
+        client=client, texts=texts, embedding=model, index_name=INDEX_NAME
     )
     output = docsearch.similarity_search("foo", k=1)
     assert output == [Document(page_content="foo")]
@@ -32,7 +34,7 @@ def test_steamship_vector_store_with_metadatas_from_text(client: Steamship, mode
         texts=texts,
         embedding=model,
         metadatas=metadatas,
-        index_name="test-index",
+        index_name=INDEX_NAME,
     )
     output = docsearch.similarity_search("foo", k=1)
 
@@ -44,7 +46,7 @@ def test_steamship_vector_store_with_metadatas_from_text(client: Steamship, mode
 def test_steamship_vector_store_add_texts(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
-    docsearch = SteamshipVectorStore(client=client, embedding=model, index_name="test-index")
+    docsearch = SteamshipVectorStore(client=client, embedding=model, index_name=INDEX_NAME)
     docsearch.add_texts(texts=texts)
     output = docsearch.similarity_search("foo", k=1)
     assert output == [Document(page_content="foo")]
@@ -56,7 +58,7 @@ def test_steamship_vector_store_with_metadatas_add_text(client: Steamship, model
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
     metadatas = [{"page": i} for i in range(len(texts))]
-    docsearch = SteamshipVectorStore(client=client, embedding=model, index_name="test-index")
+    docsearch = SteamshipVectorStore(client=client, embedding=model, index_name=INDEX_NAME)
     docsearch.add_texts(texts=texts, metadatas=metadatas)
 
     output = docsearch.similarity_search("foo", k=1)
@@ -86,7 +88,7 @@ def test_steamship_vector_store_from_files(client: Steamship, model: str) -> Non
     )
 
     svs = SteamshipVectorStore.from_files(
-        client=client, embedding=model, index_name="test-index", files=[first, second, third]
+        client=client, embedding=model, index_name=INDEX_NAME, files=[first, second, third]
     )
     output = svs.similarity_search("Brighton", k=1)
     assert output == [
@@ -122,7 +124,7 @@ def test_steamship_vector_store_add_files(client: Steamship, model: str) -> None
         tags=[Tag(kind=TagKind.PROVENANCE, value={TagValueKey.STRING_VALUE: "pinball-wizard"})],
     )
 
-    svs = SteamshipVectorStore(client=client, embedding=model, index_name="test-index")
+    svs = SteamshipVectorStore(client=client, embedding=model, index_name=INDEX_NAME)
     svs.add_files(files=[first, second, third])
     output = svs.similarity_search("Brighton", k=1)
     assert output == [
@@ -193,7 +195,7 @@ Sure plays a mean pinball"""
 
     splitter = CharacterTextSplitter(separator="\n", chunk_size=6, chunk_overlap=0)
 
-    svs = SteamshipVectorStore(client=client, embedding=model, index_name="test-index")
+    svs = SteamshipVectorStore(client=client, embedding=model, index_name=INDEX_NAME)
     svs.add_files(files=[wizard_file], splitter=splitter)
     output = svs.similarity_search("Brighton", k=1)
     assert output == [
