@@ -1,4 +1,5 @@
 """Test ElasticSearch functionality."""
+import time
 
 import pytest
 from langchain.docstore.document import Document
@@ -47,6 +48,7 @@ def test_steamship_vector_store_add_texts(client: Steamship, model: str) -> None
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
     docsearch = SteamshipVectorStore(client=client, embedding=model, index_name=INDEX_NAME)
+    time.sleep(2)
     docsearch.add_texts(texts=texts)
     output = docsearch.similarity_search("foo", k=1)
     assert output == [Document(page_content="foo")]
@@ -59,6 +61,7 @@ def test_steamship_vector_store_with_metadatas_add_text(client: Steamship, model
     texts = ["foo", "bar", "baz"]
     metadatas = [{"page": i} for i in range(len(texts))]
     docsearch = SteamshipVectorStore(client=client, embedding=model, index_name=INDEX_NAME)
+    time.sleep(2)
     docsearch.add_texts(texts=texts, metadatas=metadatas)
 
     output = docsearch.similarity_search("foo", k=1)
