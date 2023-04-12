@@ -1,4 +1,8 @@
-from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate
+from langchain.prompts import (
+    ChatPromptTemplate,
+    HumanMessagePromptTemplate,
+    SystemMessagePromptTemplate,
+)
 from steamship import Steamship
 
 from steamship_langchain.chat_models.openai import ChatOpenAI
@@ -24,9 +28,7 @@ human_template = """Please extract insights from the podcast transcript to answe
 podcst transcript: {podcast_transcript}"""
 human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
 
-chat_prompt = ChatPromptTemplate.from_messages(
-    [system_message_prompt, human_message_prompt]
-)
+chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
 client = Steamship(workspace="test")
 MODEL_NAME = "gpt-3.5-turbo"
 
@@ -36,17 +38,19 @@ transcript = """funny stories are meant to be ignored, life sucks as it is. Take
 
 chat_prompt.format_prompt(question=question, podcast_transcript=transcript[:10_000]).to_messages()
 
-messages = chat_prompt.format_prompt(question=question, podcast_transcript=transcript[:10_000]).to_messages()
+messages = chat_prompt.format_prompt(
+    question=question, podcast_transcript=transcript[:10_000]
+).to_messages()
 
 # Pure langchain
-#
-# from langchain.chat_models import ChatOpenAI
-#
-# chat = ChatOpenAI(
-#         model_name=MODEL_NAME,
-#         temperature=0,
-#         openai_api_key="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",
-#     )
+
+from langchain.chat_models import ChatOpenAI
+
+chat = ChatOpenAI(
+        model_name=MODEL_NAME,
+        temperature=0,
+        openai_api_key="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",
+    )
 
 # response = chat(chat_prompt.format_prompt(question=question, podcast_transcript=transcript[:10_000]).to_messages())
 # response.content
@@ -64,7 +68,13 @@ transcript = """funny stories are meant to be ignored, life sucks as it is. Take
 
 chat_prompt.format_prompt(question=question, podcast_transcript=transcript[:10_000]).to_messages()
 
-messages = chat_prompt.format_prompt(question=question, podcast_transcript=transcript[:10_000]).to_messages()
+messages = chat_prompt.format_prompt(
+    question=question, podcast_transcript=transcript[:10_000]
+).to_messages()
 
-response = chat(chat_prompt.format_prompt(question=question, podcast_transcript=transcript[:10_000]).to_messages())
+response = chat(
+    chat_prompt.format_prompt(
+        question=question, podcast_transcript=transcript[:10_000]
+    ).to_messages()
+)
 print(response.content)

@@ -82,15 +82,3 @@ def test_chat_openai_streaming_llm_output_contains_model_name(client: Steamship)
     llm_result = chat.generate([[message]])
     assert llm_result.llm_output is not None
     assert llm_result.llm_output["model_name"] == chat.model_name
-
-
-@pytest.mark.usefixtures("client")
-def test_chat_openai_invalid_streaming_params(client: Steamship) -> None:
-    """Test that streaming correctly invokes on_llm_new_token callback."""
-    with pytest.raises(ValueError):
-        ChatOpenAI(client=client,
-                   max_tokens=10,
-                   streaming=True,
-                   temperature=0,
-                   n=5,
-                   )

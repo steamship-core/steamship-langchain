@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Dict, Generator, List, Mapping, Optional, Tuple
 
 import tiktoken
 from langchain.chat_models.base import BaseChatModel
@@ -13,10 +13,11 @@ from langchain.schema import (
     ChatMessage,
     ChatResult,
     HumanMessage,
-    SystemMessage, LLMResult,
+    LLMResult,
+    SystemMessage,
 )
-from pydantic import Extra, root_validator, Field
-from steamship import Block, Tag, MimeTypes, File, Steamship, PluginInstance
+from pydantic import Extra, Field, root_validator
+from steamship import Block, File, MimeTypes, PluginInstance, Steamship, Tag
 from steamship.data.tags.tag_constants import RoleTag, TagKind
 
 logger = logging.getLogger(__file__)
@@ -88,6 +89,7 @@ class ChatOpenAI(BaseChatModel):
 
     class Config:
         """Configuration for this pydantic object."""
+
         extra = Extra.allow
 
     def __init__(
@@ -116,6 +118,7 @@ class ChatOpenAI(BaseChatModel):
             fetch_if_exists=True,
         )
 
+    @classmethod
     @root_validator()
     def validate_environment(cls, values: Dict) -> Dict:
         """Validate that api key and python package exists in environment."""
@@ -130,7 +133,7 @@ class ChatOpenAI(BaseChatModel):
             "model": self.model_name,
             "request_timeout": self.request_timeout,
             "max_tokens": self.max_tokens,
-            "n_completions": self.n,
+            "n": self.n,
             "temperature": self.temperature,
             # TODO (enias): Add other params
         }
@@ -138,7 +141,11 @@ class ChatOpenAI(BaseChatModel):
     def completion_with_retry(self, prompt: str, stop: Optional[List[str]] = None) -> Generator:
         raise RuntimeError("completion_with_retry is not supported, please use .generate instead.")
 
-    def _complete(self, messages: [Dict[str, str]], **params) -> BaseMessage:
+    def _combine_llm_outputs(self, llm_outputs: List[Optional[dict]]) -> dict:
+        return {"model_name": self.model_name}
+
+
+    def _complete(self, messages: [Dict[str, str]], **params) -> List[BaseMessage]:
         blocks = []
 
         for msg in messages:
@@ -158,16 +165,17 @@ class ChatOpenAI(BaseChatModel):
         generate_task = self._llm_plugin.generate(input_file_id=file.id, options=params)
         generate_task.wait()
 
-        return _convert_dict_to_message(
-            {"content": generate_task.output.blocks[0].text, "role": RoleTag.USER.value}
-        )
+        return [_convert_dict_to_message(
+            {"content": block.text, "role": RoleTag.USER.value}
+        ) for block in generate_task.output.blocks]
 
     def _generate(
             self, messages: List[BaseMessage], stop: Optional[List[str]] = None
     ) -> ChatResult:
         message_dicts, params = self._create_message_dicts(messages, stop)
-        message = self._complete(messages=message_dicts, **params)
-        return ChatResult(generations=[ChatGeneration(message=message)])
+        messages = self._complete(messages=message_dicts, **params)
+        return ChatResult(generations=[ChatGeneration(message=message) for message in messages],
+                          llm_output={"model_name": self.model_name})
 
     async def _agenerate(
             self, messages: List[BaseMessage], stop: Optional[List[str]] = None

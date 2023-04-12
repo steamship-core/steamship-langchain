@@ -196,6 +196,7 @@ class OpenAIChat(BaseOpenAIChat):
 
     class Config:
         """Configuration for this pydantic object."""
+
         extra = Extra.allow
 
     def __init__(
