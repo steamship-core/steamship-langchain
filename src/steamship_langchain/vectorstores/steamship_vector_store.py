@@ -7,6 +7,7 @@ from langchain.text_splitter import TextSplitter
 from langchain.vectorstores import VectorStore
 from steamship import File, Steamship, SteamshipError, Tag
 from steamship.data import TagKind, TagValueKey
+from steamship.data.plugin.index_plugin_instance import EmbeddingIndexPluginInstance
 
 FAMILY_TO_DIMENSIONALITY = {"ada": 1024, "babbage": 2048, "curie": 4096, "davinci": 12288}
 
@@ -84,7 +85,7 @@ class SteamshipVectorStore(VectorStore):
         self.client = client
         self.index_name = index_name or uuid.uuid4().hex
 
-        self.index = client.use_plugin(
+        self.index: EmbeddingIndexPluginInstance = client.use_plugin(
             plugin_handle="embedding-index",
             instance_handle=self.index_name,
             config={
@@ -97,6 +98,7 @@ class SteamshipVectorStore(VectorStore):
             },
             fetch_if_exists=True,
         )
+        self.index.embedder.wait_for_init()
 
     def add_files(
         self, files: Iterable[File], splitter: Optional[TextSplitter] = None
