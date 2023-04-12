@@ -98,6 +98,7 @@ class SteamshipVectorStore(VectorStore):
             },
             fetch_if_exists=True,
         )
+        time.sleep(0.5)
 
     def add_files(
         self, files: Iterable[File], splitter: Optional[TextSplitter] = None
@@ -202,7 +203,6 @@ class SteamshipVectorStore(VectorStore):
         """
 
         svs = cls(client=client, index_name=index_name, embedding=embedding)
-        time.sleep(0.5)
         svs.add_texts(texts=texts, metadatas=metadatas)
         return svs
 
@@ -234,6 +234,5 @@ class SteamshipVectorStore(VectorStore):
         """
 
         svs = cls(client=client, index_name=index_name, embedding=embedding)
-        time.sleep(0.5)
         svs.add_files(files=files, splitter=splitter)
         return svs
