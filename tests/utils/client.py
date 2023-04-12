@@ -1,6 +1,6 @@
 from steamship import Configuration, Steamship
 
-TESTING_PROFILE = "staging"
+TESTING_PROFILE = "test"
 
 
 def get_steamship_client(fail_if_workspace_exists=False, **kwargs) -> Steamship:
