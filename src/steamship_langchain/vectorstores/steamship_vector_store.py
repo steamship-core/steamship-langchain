@@ -202,7 +202,7 @@ class SteamshipVectorStore(VectorStore):
         """
 
         svs = cls(client=client, index_name=index_name, embedding=embedding)
-        time.sleep(2)
+        time.sleep(0.5)
         svs.add_texts(texts=texts, metadatas=metadatas)
         return svs
 
@@ -234,5 +234,6 @@ class SteamshipVectorStore(VectorStore):
         """
 
         svs = cls(client=client, index_name=index_name, embedding=embedding)
+        time.sleep(0.5)
         svs.add_files(files=files, splitter=splitter)
         return svs
