@@ -93,7 +93,11 @@ class ChatOpenAI(BaseChatModel):
         extra = Extra.allow
 
     def __init__(
-        self, client: Steamship, model_name: str = "gpt-4", moderate_output: bool = True, **kwargs
+        self,
+        client: Steamship,
+        model_name: str = "gpt-3.5-turbo",
+        moderate_output: bool = True,
+        **kwargs,
     ):
         super().__init__(client=client, model_name=model_name, **kwargs)
         plugin_config = {"model": self.model_name, "moderate_output": moderate_output}
