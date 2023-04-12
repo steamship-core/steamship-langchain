@@ -34,10 +34,10 @@ Follow up: When did the Twins win the World Series for the first time?"""
 
     # prompt with different stop tokens
     generated = llm_under_test(
-        WIKI_PROMPT.format(input=query, agent_scratchpad=""), stop=["\nObservation 1"]
+        WIKI_PROMPT.format(input=query, agent_scratchpad=""), stop=["\nObservation:"]
     )
-    assert generated.strip().startswith("Thought 1: ")
-    assert generated.strip().endswith("Action 1: Search[Twins]")
+    assert generated.strip().startswith("Thought: ")
+    assert generated.strip().endswith("Action: Search[Twins]")
 
 
 @pytest.mark.usefixtures("client")
@@ -127,7 +127,9 @@ def test_openai_streaming_unsupported(client: Steamship) -> None:
 def test_openai_chat_llm(client: Steamship) -> None:
     """Test Chat version of the LLM"""
     llm = OpenAIChat(client=client)
-    llm_result = llm.generate(prompts=["Please say the Pledge of Allegiance"], stop=["flag"])
+    llm_result = llm.generate(
+        prompts=["Please say the Pledge of Allegiance"], stop=["flag", "Flag"]
+    )
     assert len(llm_result.generations) == 1
     generation = llm_result.generations[0]
     assert len(generation) == 1
