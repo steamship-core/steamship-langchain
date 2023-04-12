@@ -93,7 +93,7 @@ class ChatOpenAI(BaseChatModel):
         extra = Extra.allow
 
     def __init__(
-            self, client: Steamship, model_name: str = "gpt-4", moderate_output: bool = True, **kwargs
+        self, client: Steamship, model_name: str = "gpt-4", moderate_output: bool = True, **kwargs
     ):
         super().__init__(client=client, model_name=model_name, **kwargs)
         plugin_config = {"model": self.model_name, "moderate_output": moderate_output}
@@ -144,7 +144,6 @@ class ChatOpenAI(BaseChatModel):
     def _combine_llm_outputs(self, llm_outputs: List[Optional[dict]]) -> dict:
         return {"model_name": self.model_name}
 
-
     def _complete(self, messages: [Dict[str, str]], **params) -> List[BaseMessage]:
         blocks = []
 
@@ -165,25 +164,28 @@ class ChatOpenAI(BaseChatModel):
         generate_task = self._llm_plugin.generate(input_file_id=file.id, options=params)
         generate_task.wait()
 
-        return [_convert_dict_to_message(
-            {"content": block.text, "role": RoleTag.USER.value}
-        ) for block in generate_task.output.blocks]
+        return [
+            _convert_dict_to_message({"content": block.text, "role": RoleTag.USER.value})
+            for block in generate_task.output.blocks
+        ]
 
     def _generate(
-            self, messages: List[BaseMessage], stop: Optional[List[str]] = None
+        self, messages: List[BaseMessage], stop: Optional[List[str]] = None
     ) -> ChatResult:
         message_dicts, params = self._create_message_dicts(messages, stop)
         messages = self._complete(messages=message_dicts, **params)
-        return ChatResult(generations=[ChatGeneration(message=message) for message in messages],
-                          llm_output={"model_name": self.model_name})
+        return ChatResult(
+            generations=[ChatGeneration(message=message) for message in messages],
+            llm_output={"model_name": self.model_name},
+        )
 
     async def _agenerate(
-            self, messages: List[BaseMessage], stop: Optional[List[str]] = None
+        self, messages: List[BaseMessage], stop: Optional[List[str]] = None
     ) -> ChatResult:
         raise NotImplementedError("Support for async is not provided yet.")
 
     def _create_message_dicts(
-            self, messages: List[BaseMessage], stop: Optional[List[str]]
+        self, messages: List[BaseMessage], stop: Optional[List[str]]
     ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         params: Dict[str, Any] = {**{"model": self.model_name}, **self._default_params}
         if stop is not None:
@@ -215,7 +217,7 @@ class ChatOpenAI(BaseChatModel):
         }
 
     async def agenerate(
-            self, messages: List[List[BaseMessage]], stop: Optional[List[str]] = None
+        self, messages: List[List[BaseMessage]], stop: Optional[List[str]] = None
     ) -> LLMResult:
         raise NotImplementedError("Support for async is not provided yet.")
 
