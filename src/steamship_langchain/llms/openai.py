@@ -196,7 +196,6 @@ class OpenAIChat(BaseOpenAIChat):
 
     class Config:
         """Configuration for this pydantic object."""
-
         extra = Extra.allow
 
     def __init__(
@@ -231,6 +230,7 @@ class OpenAIChat(BaseOpenAIChat):
 
     def _completion(self, messages: [Dict[str, str]], **params) -> str:
         blocks = []
+
         for msg in messages:
             role = msg.get("role", "user")
             content = msg.get("content", "")
