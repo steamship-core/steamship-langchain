@@ -1,6 +1,6 @@
 import uuid
 from itertools import zip_longest
-from typing import Any, Iterable, List, Optional
+from typing import Any, Iterable, List, Optional, Tuple
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import TextSplitter
@@ -161,6 +161,15 @@ class SteamshipVectorStore(VectorStore):
             for item in search_results.output.items
         ]
 
+    def similarity_search_with_score(self, query: str, k: int = 4) -> List[Tuple[Document, float]]:
+        search_results = self.index.search(query, k=k)
+        search_results.wait()
+        docs = []
+        for item in search_results.output.items:
+            doc = Document(page_content=item.tag.text, metadata=item.tag.value)
+            docs.append((doc, item.score))
+        return docs
+
     def similarity_search_by_vector(
         self, embedding: List[float], k: int = 4, **kwargs: Any
     ) -> List[Document]:
@@ -236,3 +245,14 @@ class SteamshipVectorStore(VectorStore):
         svs = cls(client=client, index_name=index_name, embedding=embedding)
         svs.add_files(files=files, splitter=splitter)
         return svs
+
+
+if __name__ == "__main__":
+    client = Steamship()
+    vectorstore = SteamshipVectorStore.from_texts(
+        client=client,
+        index_name="agi-testing",
+        texts=["this is a test", "this is another test"],
+        embedding="text-embedding-ada-002",
+    )
+    vectorstore.similarity_search_with_score(query="test")
