@@ -245,14 +245,3 @@ class SteamshipVectorStore(VectorStore):
         svs = cls(client=client, index_name=index_name, embedding=embedding)
         svs.add_files(files=files, splitter=splitter)
         return svs
-
-
-if __name__ == "__main__":
-    client = Steamship()
-    vectorstore = SteamshipVectorStore.from_texts(
-        client=client,
-        index_name="agi-testing",
-        texts=["this is a test", "this is another test"],
-        embedding="text-embedding-ada-002",
-    )
-    vectorstore.similarity_search_with_score(query="test")
