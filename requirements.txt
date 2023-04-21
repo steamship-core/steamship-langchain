@@ -1,4 +1,4 @@
-steamship==2.15.0
+steamship==2.16.2
 langchain==0.0.137
 tiktoken==0.2.0
 pydantic==1.10.2
