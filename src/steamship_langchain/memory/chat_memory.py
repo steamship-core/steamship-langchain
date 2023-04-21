@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from langchain.memory.chat_memory import ChatMessageHistory as BaseChatMessageHistory
-from langchain.schema import BaseMessage, HumanMessage
+from langchain.schema import AIMessage, BaseMessage, HumanMessage
 from steamship import Block, File, Steamship, SteamshipError, Tag
 from steamship.data import TagKind
 
@@ -51,7 +51,7 @@ class ChatMessageHistory(BaseChatMessageHistory):
             if b.text.startswith(self.HUMAN_PREFIX):
                 messages.append(HumanMessage(content=b.text[len(self.HUMAN_PREFIX) :]))
             elif b.text.startswith(self.AI_PREFIX):
-                messages.append(HumanMessage(content=b.text[len(self.AI_PREFIX) :]))
+                messages.append(AIMessage(content=b.text[len(self.AI_PREFIX) :]))
             else:
                 raise ValueError(f"Found unsupported message type: {b.text}")
         return messages
