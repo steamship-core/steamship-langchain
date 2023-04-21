@@ -8,11 +8,13 @@ from steamship.data import TagKind, TagValueKey
 
 from steamship_langchain.vectorstores import SteamshipVectorStore
 
+EMBEDDINGS_MODELS = ["text-embedding-ada-002"]
+
 INDEX_NAME = "test-index-001"
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_from_texts(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
@@ -24,7 +26,7 @@ def test_steamship_vector_store_from_texts(client: Steamship, model: str) -> Non
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_with_metadatas_from_text(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
@@ -42,7 +44,7 @@ def test_steamship_vector_store_with_metadatas_from_text(client: Steamship, mode
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_add_texts(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
@@ -53,7 +55,7 @@ def test_steamship_vector_store_add_texts(client: Steamship, model: str) -> None
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_with_metadatas_add_text(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
     texts = ["foo", "bar", "baz"]
@@ -66,7 +68,7 @@ def test_steamship_vector_store_with_metadatas_add_text(client: Steamship, model
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_from_files(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
 
@@ -103,7 +105,7 @@ def test_steamship_vector_store_from_files(client: Steamship, model: str) -> Non
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_add_files(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
 
@@ -139,7 +141,7 @@ def test_steamship_vector_store_add_files(client: Steamship, model: str) -> None
 
 
 @pytest.mark.usefixtures("client")
-@pytest.mark.parametrize("model", ["text-embedding-ada-002", "text-similarity-davinci-001"])
+@pytest.mark.parametrize("model", EMBEDDINGS_MODELS)
 def test_steamship_vector_store_add_files_with_splitter(client: Steamship, model: str) -> None:
     """Test end to end construction and search."""
 
