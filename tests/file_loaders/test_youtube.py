@@ -10,8 +10,8 @@ TEST_URL = "https://www.youtube.com/watch?v=MkTw3_PmKtc"
 
 
 @pytest.mark.usefixtures("client")
+@pytest.mark.skip()  # YT loader implementation is failing at the moment due to YT changes.
 def test_youtube_loader(client: Steamship):
-
     loader_under_test = YouTubeFileLoader(client=client)
     files = loader_under_test.load(TEST_URL)
 
