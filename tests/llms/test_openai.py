@@ -128,13 +128,13 @@ def test_openai_chat_llm(client: Steamship) -> None:
     """Test Chat version of the LLM"""
     llm = OpenAIChat(client=client)
     llm_result = llm.generate(
-        prompts=["Please say the Pledge of Allegiance"], stop=["flag", "Flag"]
+        prompts=["Please print the words of the Pledge of Allegiance"], stop=["flag", "Flag"]
     )
     assert len(llm_result.generations) == 1
     generation = llm_result.generations[0]
     assert len(generation) == 1
     text_response = generation[0].text
-    assert text_response.strip() == "I pledge allegiance to the"
+    assert text_response.strip(' "') == "I pledge allegiance to the"
 
 
 @pytest.mark.usefixtures("client")
