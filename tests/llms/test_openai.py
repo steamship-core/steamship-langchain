@@ -155,3 +155,23 @@ def test_openai_chat_llm_with_prefixed_messages(client: Steamship) -> None:
     assert len(generation) == 1
     text_response = generation[0].text
     assert text_response.strip() == "What is the meaning of life?"
+
+
+@pytest.mark.usefixtures("client")
+def test_openai_llm_with_chat_model_init(client: Steamship) -> None:
+    """Test Chat version of the LLM, with old init style"""
+    messages = [
+        {
+            "role": "system",
+            "content": "You are EchoGPT. For every prompt you receive, you reply with the exact same text.",
+        },
+        {"role": "user", "content": "This is a test."},
+        {"role": "assistant", "content": "This is a test."},
+    ]
+    llm = OpenAI(client=client, prefix_messages=messages, model_name="gpt-4")
+    llm_result = llm.generate(prompts=["What is the meaning of life?"])
+    assert len(llm_result.generations) == 1
+    generation = llm_result.generations[0]
+    assert len(generation) == 1
+    text_response = generation[0].text
+    assert text_response.strip() == "What is the meaning of life?"

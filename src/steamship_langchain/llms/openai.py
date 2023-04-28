@@ -1,6 +1,7 @@
 import hashlib
 import json
 import logging
+import warnings
 from collections import defaultdict
 from typing import Any, Dict, Generator, List, Mapping, Optional
 
@@ -44,6 +45,18 @@ class OpenAI(BaseOpenAI):
 
     client: Steamship  # We can use validate_environment to add the client here
     batch_task_timeout_seconds: int = 10 * 60  # 10 minute limit on generation tasks
+
+    def __new__(cls, **data: Any):
+        """Initialize the OpenAI object."""
+        model_name = data.get("model_name", "")
+        if model_name.startswith("gpt-3.5-turbo") or model_name.startswith("gpt-4"):
+            warnings.warn(
+                "You are trying to use a chat model. This way of initializing it is "
+                "no longer supported. Instead, please use: "
+                "`from steamship_langchain.llms import OpenAIChat`"
+            )
+            return OpenAIChat(**data)
+        return super().__new__(cls)
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
@@ -186,7 +199,6 @@ class OpenAI(BaseOpenAI):
             logging.error(f"could not generate from OpenAI LLM: {e}")
             # TODO(douglas-reid): determine appropriate action here.
             # for now, if an error is encountered, just swallow.
-            pass
 
         return generations, token_usage
 
@@ -202,8 +214,8 @@ class OpenAIChat(BaseOpenAIChat):
     def __init__(
         self, client: Steamship, model_name: str = "gpt-4", moderate_output: bool = True, **kwargs
     ):
-        super().__init__(client=client, model_name=model_name, **kwargs)
-        plugin_config = {"model": self.model_name, "moderate_output": moderate_output}
+        super().__init__(client=client, **kwargs)
+        plugin_config = {"model": model_name, "moderate_output": moderate_output}
         if self.openai_api_key:
             plugin_config["openai_api_key"] = self.openai_api_key
 
