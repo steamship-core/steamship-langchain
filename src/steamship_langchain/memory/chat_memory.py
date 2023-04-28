@@ -3,6 +3,7 @@ from typing import List, Optional
 
 from langchain.memory.chat_memory import ChatMessageHistory as BaseChatMessageHistory
 from langchain.schema import AIMessage, BaseMessage, HumanMessage
+from pydantic import PrivateAttr
 from steamship import Block, File, Steamship, SteamshipError, Tag
 from steamship.data import TagKind
 
@@ -33,8 +34,11 @@ class ChatMessageHistory(BaseChatMessageHistory):
     HUMAN_PREFIX: str = "Human: "
     AI_PREFIX: str = "AI: "
 
+    _file_handle: str = PrivateAttr()
+
     def __init__(self, client: Steamship, key: str, *args, **kwargs):
         super().__init__(client=client, key=key, *args, **kwargs)
+        self._file_handle = f"history-{self.key}"
         self.messages.extend(
             self.saved_messages
         )  # TODO: is this right? or should this be a prepend?
@@ -60,11 +64,11 @@ class ChatMessageHistory(BaseChatMessageHistory):
         convo_file = self._get_conversation_file()
         if convo_file:
             return convo_file
-        return File.create(self.client, handle=self.key, blocks=[])
+        return File.create(self.client, handle=self._file_handle, blocks=[])
 
     def _get_conversation_file(self) -> Optional[File]:
         try:
-            return File.get(self.client, handle=self.key)
+            return File.get(self.client, handle=self._file_handle)
         except SteamshipError:
             return None
 
