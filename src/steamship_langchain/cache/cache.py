@@ -1,6 +1,6 @@
 import hashlib
 import logging
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from langchain.cache import RETURN_VAL_TYPE, BaseCache
 from langchain.schema import Generation
@@ -52,6 +52,9 @@ class SteamshipCache(BaseCache):
 
         logging.debug(f"cache miss for {prompt}")
         return None
+
+    def clear(self, **kwargs: Any) -> None:
+        raise NotImplementedError()
 
     def update(self, prompt: str, llm_string: str, return_val: RETURN_VAL_TYPE) -> None:
         """Update cache based on prompt and llm_string.
