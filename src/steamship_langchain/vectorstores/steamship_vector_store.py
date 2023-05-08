@@ -176,12 +176,12 @@ class SteamshipVectorStore(VectorStore):
         raise NotImplementedError("similarity_search_by_vector not supported yet.")
 
     def max_marginal_relevance_search(
-        self, query: str, k: int = 4, fetch_k: int = 20
+        self, query: str, k: int = 4, fetch_k: int = 20, **kwargs
     ) -> List[Document]:
         raise NotImplementedError("Max marginal relevance search not supported yet.")
 
     def max_marginal_relevance_search_by_vector(
-        self, embedding: List[float], k: int = 4, fetch_k: int = 20
+        self, embedding: List[float], k: int = 4, fetch_k: int = 20, **kwargs
     ) -> List[Document]:
         raise NotImplementedError("Max marginal relevance search not supported yet.")
 
