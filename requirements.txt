@@ -1,2 +1,2 @@
 steamship~=2.16.4
-langchain==0.0.152
+langchain==0.0.167
