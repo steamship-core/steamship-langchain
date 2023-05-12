@@ -280,3 +280,8 @@ class ChatOpenAI(BaseChatModel):
         # every reply is primed with <im_start>assistant
         num_tokens += 3
         return num_tokens
+
+    @property
+    def _llm_type(self) -> str:
+        """Return type of chat model."""
+        return "openai-chat"
