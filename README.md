@@ -150,7 +150,7 @@ with Steamship.temporary_workspace() as client:
 
 Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (full source: [examples/chatbot](./examples/chatbot)).
 
-[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-with-LangChain-and-Steamship)
+[![Run on Repl.it](https://replit.com/badge/github/@SteamshipDoug/Persistent-ChatBot-Using-Steamship-and-GPT4)](https://replit.com/@SteamshipDoug/Persistent-ChatBot-Using-Steamship-and-GPT4)
 
 > **NOTE**
 > The full ChatBot transcript will persist for the lifetime of the Steamship Workspace. 
@@ -160,7 +160,7 @@ Implements a basic Chatbot (similar to ChatGPT) in Steamship with LangChain (ful
 ```python
 from langchain.memory import ConversationBufferWindowMemory
 
-from steamship_langchain.llms import OpenAI
+from steamship_langchain.llms import OpenAIChat
 from steamship_langchain.memory import ChatMessageHistory
 
 @post("/send_message")
@@ -168,7 +168,7 @@ def send_message(self, message: str, chat_history_handle: str) -> str:
   chat_memory = ChatMessageHistory(client=self.client, key=chat_history_handle)
   mem = ConversationBufferWindowMemory(chat_memory=chat_memory, k=2)
   chatgpt = LLMChain(
-    llm=OpenAI(client=self.client, temperature=0),
+    llm=OpenAIChat(client=self.client, temperature=0),
     prompt=CHATBOT_PROMPT,
     memory=mem,
   )
