@@ -3,7 +3,7 @@ from langchain.memory import ConversationBufferMemory, ConversationBufferWindowM
 from prompt import CHATBOT_PROMPT
 from steamship.invocable import PackageService, get, post
 
-from steamship_langchain.llms import OpenAI
+from steamship_langchain.llms import OpenAIChat
 from steamship_langchain.memory import ChatMessageHistory
 
 
@@ -16,7 +16,7 @@ class ChatbotPackage(PackageService):
         steamship_memory = ChatMessageHistory(client=self.client, key=chat_history_handle)
         chat_buffer = ConversationBufferWindowMemory(chat_memory=steamship_memory, k=2)
         chatgpt = LLMChain(
-            llm=OpenAI(client=self.client, temperature=0),
+            llm=OpenAIChat(client=self.client, temperature=0),
             prompt=CHATBOT_PROMPT,
             memory=chat_buffer,
         )

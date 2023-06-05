@@ -44,6 +44,7 @@ For a detailed overview of our adapters, check out the adapters overview page.
 
 ```diff
 - from langchain.llms import OpenAI
++ from steamship import Steamship
 + from steamship_langchain.llms import OpenAI
 
 + client = Steamship()
@@ -80,10 +81,59 @@ class JokeWizard(PackageService):
         return llm("Tell me a joke")
 ```
 
+And create a requirements.txt for your package:
+
+```bash
+echo "steamship-langchain" > requirements.txt
+```
+
 ### Step 3: Ship it 
 
 That's it, now you can deploy your package:
 
+
 ```bash
 ship it
+```
+
+## Full example:
+
+### Code
+```python
+from steamship import Steamship
+from steamship_langchain.llms import OpenAI
+from steamship.invocable import PackageService, post
+
+class JokeWizard(PackageService):
+
+    @post("generate")
+    def generate(self) -> str:
+        llm = OpenAI(
+            client=self.client,
+            model_name="text-ada-001",
+            n=2, best_of=2,
+            temperature=0.9)
+
+        return llm("Tell me a joke")
+
+
+
+def call():
+  with Steamship.temporary_workspace() as client:
+    package = client.use("jdr-throw-me-away")
+    print(package.invoke("generate"))
+
+
+if __name__ == "__main__":
+  call()
+```
+
+### Run
+
+```bash
+$ python api.py
+
+Why did the chicken cross the road?
+
+To get to the other side!
 ```
