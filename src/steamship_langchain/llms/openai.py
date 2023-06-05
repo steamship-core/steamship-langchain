@@ -10,7 +10,16 @@ from langchain.llms.base import Generation, LLMResult
 from langchain.llms.openai import BaseOpenAI
 from langchain.llms.openai import OpenAIChat as BaseOpenAIChat
 from pydantic import Extra, root_validator
-from steamship import Block, File, MimeTypes, PluginInstance, Steamship, SteamshipError, Tag
+from steamship import (
+    Block,
+    File,
+    MimeTypes,
+    PluginInstance,
+    Steamship,
+    SteamshipError,
+    Tag,
+    TaskState,
+)
 from steamship.data import TagKind, TagValueKey
 from steamship.data.tags.tag_constants import RoleTag
 
@@ -182,6 +191,10 @@ class OpenAI(BaseOpenAI):
             # the llm_plugin handles retries and backoff. this wait()
             # will allow for that to happen.
             task.wait(max_timeout_s=self.batch_task_timeout_seconds)
+
+            if not task.state == TaskState.succeeded:
+                raise SteamshipError(f"generation task failed: {task.status_message}")
+
             generation_file = task.output.file
 
             for text_block in generation_file.blocks:
