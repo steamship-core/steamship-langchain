@@ -20,7 +20,7 @@ from langchain.schema import (
     LLMResult,
     SystemMessage,
 )
-from pydantic import Extra, Field, ValidationError, root_validator
+from pydantic import Extra, Field, ValidationError
 from steamship import Block, File, MimeTypes, PluginInstance, Steamship, Tag
 from steamship.data.tags.tag_constants import TagKind
 
@@ -109,31 +109,6 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
         """Configuration for this pydantic object."""
 
         extra = Extra.allow
-
-    @root_validator(allow_reuse=True)
-    def validate_environment(cls, values: Dict) -> Dict:
-        """Validate that api key and python package exists in environment."""
-        try:
-            import openai
-
-        except ImportError:
-            raise ValueError(
-                "Could not import openai python package. "
-                "Please install it with `pip install openai`."
-            )
-        try:
-            values["client"] = openai.ChatCompletion
-        except AttributeError:
-            raise ValueError(
-                "`openai` has no `ChatCompletion` attribute, this is likely "
-                "due to an old version of the openai package. Try upgrading it "
-                "with `pip install --upgrade openai`."
-            )
-        if values["n"] < 1:
-            raise ValueError("n must be at least 1.")
-        if values["n"] > 1 and values["streaming"]:
-            raise ValueError("n must be 1 when streaming.")
-        return values
 
     def __init__(
         self,
