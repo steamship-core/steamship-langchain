@@ -218,7 +218,7 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
             content = msg.get("content", "")
             name = msg.get("name", "")
             if len(content) > 0:
-                tags = [Tag(kind=TagKind.ROLE, name=role_tag)]
+                tags = [Tag(kind=TagKind.ROLE, name=role)]
                 if name:
                     tags.append(Tag(kind="name", name=name))
 
