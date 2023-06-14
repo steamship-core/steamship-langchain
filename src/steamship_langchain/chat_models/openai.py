@@ -156,7 +156,7 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
         self._llm_plugin = self.client.use_plugin(
             plugin_handle="gpt-4",
             config=plugin_config,
-            fetch_if_exists=False,
+            fetch_if_exists=True,
         )
 
     @property
