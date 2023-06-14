@@ -6,6 +6,7 @@ import logging
 from typing import Any, Dict, Generator, List, Mapping, Optional, Tuple
 
 import tiktoken
+from langchain.callbacks.manager import CallbackManagerForLLMRun
 from langchain.chat_models.base import BaseChatModel
 from langchain.chat_models.openai import ChatOpenAI
 from langchain.schema import (
@@ -21,7 +22,7 @@ from langchain.schema import (
 )
 from pydantic import Extra, Field, ValidationError, root_validator
 from steamship import Block, File, MimeTypes, PluginInstance, Steamship, Tag
-from steamship.data.tags.tag_constants import RoleTag, TagKind
+from steamship.data.tags.tag_constants import TagKind
 
 logger = logging.getLogger(__file__)
 
@@ -34,8 +35,8 @@ def _convert_dict_to_message(_dict: Mapping[str, Any]) -> BaseMessage:
         content = _dict["content"]
         if "function_call" in content:
             try:
-                return AIMessage(content=content, additional_kwargs=json.loads(content))
-            except Exception as e:
+                return AIMessage(content="", additional_kwargs=json.loads(content))
+            except Exception:
                 pass
         return AIMessage(content=content)
     elif role == "system":
@@ -109,12 +110,37 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
 
         extra = Extra.allow
 
+    @root_validator(allow_reuse=True)
+    def validate_environment(cls, values: Dict) -> Dict:
+        """Validate that api key and python package exists in environment."""
+        try:
+            import openai
+
+        except ImportError:
+            raise ValueError(
+                "Could not import openai python package. "
+                "Please install it with `pip install openai`."
+            )
+        try:
+            values["client"] = openai.ChatCompletion
+        except AttributeError:
+            raise ValueError(
+                "`openai` has no `ChatCompletion` attribute, this is likely "
+                "due to an old version of the openai package. Try upgrading it "
+                "with `pip install --upgrade openai`."
+            )
+        if values["n"] < 1:
+            raise ValueError("n must be at least 1.")
+        if values["n"] > 1 and values["streaming"]:
+            raise ValueError("n must be 1 when streaming.")
+        return values
+
     def __init__(
-            self,
-            client: Steamship,
-            model_name: str = "gpt-3.5-turbo-0613",
-            moderate_output: bool = True,
-            **kwargs,
+        self,
+        client: Steamship,
+        model_name: str = "gpt-3.5-turbo-0613",
+        moderate_output: bool = True,
+        **kwargs,
     ):
         try:
 
@@ -135,7 +161,6 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
                 self.openai_api_key = None
         except ValidationError as e:
             print(e)
-            pass
         self.client = client
         plugin_config = {"model": self.model_name, "moderate_output": moderate_output}
         if self.openai_api_key:
@@ -158,14 +183,6 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
             config=plugin_config,
             fetch_if_exists=False,
         )
-
-    @classmethod
-    @root_validator()
-    def validate_environment(cls, values: Dict) -> Dict:
-        """Validate that api key and python package exists in environment."""
-        if values["n"] < 1:
-            raise ValueError("n must be at least 1.")
-        return values
 
     @property
     def _default_params(self) -> Dict[str, Any]:
@@ -220,11 +237,11 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
         ]
 
     def _generate(
-            self,
-            messages: List[BaseMessage],
-            stop: Optional[List[str]] = None,
-            run_manager: Optional[CallbackManagerForLLMRun] = None,
-            **kwargs: Any,
+        self,
+        messages: List[BaseMessage],
+        stop: Optional[List[str]] = None,
+        run_manager: Optional[CallbackManagerForLLMRun] = None,
+        **kwargs: Any,
     ) -> ChatResult:
         message_dicts, params = self._create_message_dicts(messages, stop)
         params = {**params, **kwargs}
@@ -235,12 +252,12 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
         )
 
     async def _agenerate(
-            self, messages: List[BaseMessage], stop: Optional[List[str]] = None
+        self, messages: List[BaseMessage], stop: Optional[List[str]] = None
     ) -> ChatResult:
         raise NotImplementedError("Support for async is not provided yet.")
 
     def _create_message_dicts(
-            self, messages: List[BaseMessage], stop: Optional[List[str]]
+        self, messages: List[BaseMessage], stop: Optional[List[str]]
     ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         params: Dict[str, Any] = {**{"model": self.model_name}, **self._default_params}
         if stop is not None:
@@ -272,7 +289,7 @@ class ChatOpenAI(ChatOpenAI, BaseChatModel):
         }
 
     async def agenerate(
-            self, messages: List[List[BaseMessage]], stop: Optional[List[str]] = None
+        self, messages: List[List[BaseMessage]], stop: Optional[List[str]] = None
     ) -> LLMResult:
         raise NotImplementedError("Support for async is not provided yet.")
 
