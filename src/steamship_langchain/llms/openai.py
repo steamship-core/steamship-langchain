@@ -227,7 +227,7 @@ class OpenAIChat(BaseOpenAIChat):
     def __init__(
         self, client: Steamship, model_name: str = "gpt-4", moderate_output: bool = True, **kwargs
     ):
-        super().__init__(client=client, **kwargs)
+        super().__init__(client=client, model_name=model_name, **kwargs)
         plugin_config = {"model": model_name, "moderate_output": moderate_output}
         if self.openai_api_key:
             plugin_config["openai_api_key"] = self.openai_api_key

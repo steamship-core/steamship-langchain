@@ -175,3 +175,21 @@ def test_openai_llm_with_chat_model_init(client: Steamship) -> None:
     assert len(generation) == 1
     text_response = generation[0].text
     assert text_response.strip() == "What is the meaning of life?"
+
+
+@pytest.mark.usefixtures("client")
+def test_openai_large_context(client: Steamship):
+    """Basic tests of the OpenAIChat plugin wrapper for large context models."""
+
+    llm_under_test = OpenAIChat(client=client, model_name="gpt-3.5-turbo-16k", temperature=0.8)
+
+    long_prompt = (
+        'Complete the following short story. The child screamed "'
+        + "AHHHHH" * 5000
+        + '" when they saw the'
+    )
+
+    prompts = [long_prompt]
+    generated = llm_under_test.generate(prompts=prompts)
+    assert len(generated.generations) != 0
+    assert len(generated.generations[0]) > 0
