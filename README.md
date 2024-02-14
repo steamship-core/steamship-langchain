@@ -349,4 +349,4 @@ More on deployment and Workspaces can be found in [our docs](https://docs.steams
 
 Have any feedback on this package? Or on [Steamship](https://steamship.com) in general?
 
-We'd love to hear from you. Please reach out to: hello@steamship.com, or join us on our [Discord](https://discord.gg/5Vry5ANVwT).
+We'd love to hear from you. Please reach out to: hello@steamship.com.
